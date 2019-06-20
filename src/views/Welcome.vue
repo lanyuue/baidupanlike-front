@@ -1,6 +1,8 @@
 <template>
+
   <div>
-    <Login class="login"></Login>
+  <md-progress-bar md-mode="indeterminate" v-show="showLogin"  ></md-progress-bar>
+    <Login class="login" :flag="showLogin" @close-login="closeLogin"></Login>
   </div>
 </template>
 
@@ -11,11 +13,22 @@ export default {
   name: "MainPage",
   components: {
     Login
+  },
+  data () {
+    return {
+      showLogin: false
+    }
+  },
+  methods: {
+    closeLogin (payload) {
+      console.log('ss')
+      this.showLogin = payload;
+    }
   }
 };
 </script>
 
-<style>
+<style scoped>
 .login {
   position: absolute;
   left: 50%;

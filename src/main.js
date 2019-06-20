@@ -10,13 +10,42 @@ import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
 
 Vue.config.productionTip = false
+axios.defaults.withCredentials = true
 Vue.use(VueMaterial)
-Vue.use(VueAxios,axios);
+Vue.use(VueAxios, axios);
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   components: { App },
-  template: '<App />'
+  template: '<App />',
+  watch: {
+    "$route": 'checkLogin'
+  },
+  created() {
+    this.checkLogin();
+  },
+  methods: {
+    checkLogin() {
+      this.axios
+        .post("/api/check")
+        .then(successResponse => {
+          this.responseResult = JSON.stringify(successResponse.data)
+          if (successResponse.data.code === 200 && successResponse.data.message === '认证成功') {
+            this.$router.push({ path: '/home' })
+          } else {
+            this.$router.push({ path: '/' })
+          }
+          //console.log(successResponse.data.message)
+        })
+        .catch(failResponse => { });
+      // //检查是否存在session
+      // if (!this.getCookie('JSESSIONID')) {
+      //   this.$router.push('/home');
+      // } else {
+      //   this.$router.push('/home');
+      //}
+    }
+  }
 })
