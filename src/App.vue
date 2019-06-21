@@ -9,6 +9,10 @@
 export default {
   name: 'App'
 }
+document.body.addEventListener('touchmove', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+    }, { passive: false });
 </script>
 
 <style>

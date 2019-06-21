@@ -1,13 +1,13 @@
 <template>
-  <div class="page-container">
-    <md-app>
-      <md-app-toolbar class="md-primary"  md-elevation="4">
+  <div class="page-container"  style="height:100vh;overflow:hidden;">
+    <md-app class="md-apps" >
+      <md-app-toolbar class="md-primary"  md-elevation="0">
         <div class="md-toolbar-section-end">
           <md-button class="md-icon-button" @click="toggleMenu" v-if="!menuVisible">
             <md-avatar class="md-avatar-icon md-accent" style="background-color:#41B883">V</md-avatar>
           </md-button>
         </div>
-        <span class="md-title">My Title</span>
+        <span class="md-title">Google Drive</span>
       </md-app-toolbar>
 
       <md-app-drawer
@@ -15,6 +15,7 @@
         :md-active.sync="menuVisible"
         md-right
         md-persistent="mini"
+        style="height:100vh;overflow:hidden;"
       >
         <md-toolbar class="md-transparent" md-elevation="0">
           <span>Navigation</span>
@@ -51,7 +52,7 @@
         </md-list>
       </md-app-drawer>
 
-      <md-app-content>
+      <md-app-content style="overflow:hidden">
         <Content></Content>
       </md-app-content>
     </md-app>
@@ -81,9 +82,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.md-app {
-  height: 100vh;
-  //border: 1px solid rgba(#000, 0.12);
+.md-apps {
+  border: 1px solid rgba(#000, 0.12);
+  background-color: #000;
 }
 
 // Demo purposes only
