@@ -9,7 +9,7 @@
     </md-card>
     <md-field>
       <label>邮箱地址</label>
-      <md-input v-validate="'required|email'" v-model="email" type="email" placeholder="请输入邮件地址"></md-input>
+      <md-input v-model="email" type="email" placeholder="请输入邮件地址"></md-input>
     </md-field>
 
     <md-field>

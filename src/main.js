@@ -9,11 +9,7 @@ import VueMaterial from 'vue-material'
 
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
-import VeeValidate from 'vee-validate';
 
-import { ValidationProvider } from 'vee-validate';
-Vue.component('ValidationProvider', ValidationProvider);
-Vue.use(VeeValidate);
 Vue.config.productionTip = false
 axios.defaults.withCredentials = true
 Vue.use(VueMaterial)
@@ -43,15 +39,8 @@ new Vue({
           } else {
             this.$router.push({ path: '/' })
           }
-          //console.log(successResponse.data.message)
         })
         .catch(failResponse => { });
-      // //检查是否存在session
-      // if (!this.getCookie('JSESSIONID')) {
-      //   this.$router.push('/home');
-      // } else {
-      //   this.$router.push('/home');
-      //}
     }
   }
 })

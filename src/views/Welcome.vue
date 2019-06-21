@@ -2,7 +2,7 @@
 
   <div>
   <md-progress-bar md-mode="indeterminate" v-show="showLogin"  ></md-progress-bar>
-    <Login class="login" :flag="showLogin" @close-login="closeLogin"></Login>
+    <Login class="login" @close-login="closeLogin"></Login>
   </div>
 </template>
 

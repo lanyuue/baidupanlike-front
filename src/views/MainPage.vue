@@ -1,13 +1,13 @@
 <template>
-  <div class="page-container"  style="height:100vh;overflow:hidden;">
-    <md-app class="md-apps" >
-      <md-app-toolbar class="md-primary"  md-elevation="0">
+  <div class="page-container" style="height:100vh;overflow:hidden;">
+    <md-app class="md-apps">
+      <md-app-toolbar class="md-primary" md-elevation="0">
         <div class="md-toolbar-section-end">
           <md-button class="md-icon-button" @click="toggleMenu" v-if="!menuVisible">
             <md-avatar class="md-avatar-icon md-accent" style="background-color:#41B883">V</md-avatar>
           </md-button>
         </div>
-        <span class="md-title">Google Drive</span>
+        <span class="md-title">AldosdDrive</span>
       </md-app-toolbar>
 
       <md-app-drawer
@@ -17,11 +17,23 @@
         md-persistent="mini"
         style="height:100vh;overflow:hidden;"
       >
-        <md-toolbar class="md-transparent" md-elevation="0">
-          <span>Navigation</span>
+        <md-toolbar class="md-transparent" md-elevation="0" style="padding:0;margin:5px 0 0 0;">
+          <md-avatar
+            class="md-avatar-icon md-accent"
+            style="background-color:#41B883;margin-left:10px"
+          >V</md-avatar>
+          <div style="font-family:'Roboto';margin-left:12px;text-align:left;">
+            <b>{{ nickname }}</b>
+            <br>
+            <div style="color:#666">{{ email }}</div>
+          </div>
 
           <div class="md-toolbar-section-end">
-            <md-button class="md-icon-button md-dense" @click="toggleMenu">
+            <md-button
+              class="md-icon-button md-dense"
+              style="margin-left:-20px;margin-top:-5px"
+              @click="toggleMenu"
+            >
               <md-icon>keyboard_arrow_right</md-icon>
             </md-button>
           </div>
@@ -29,8 +41,17 @@
 
         <md-list>
           <md-list-item>
-            <md-icon>move_to_inbox</md-icon>
-            <span class="md-list-item-text">Inbox</span>
+            <md-button class="md-icon-button" style="margin-left:-7px" @click="show_home">
+              <md-icon>home</md-icon>
+            </md-button>
+            <span class="md-list-item-text" style="margin-left:17px">首页</span>
+          </md-list-item>
+
+          <md-list-item>
+            <md-button class="md-icon-button" style="margin-left:-7px" @click="show_person_info">
+              <md-icon>account_circle</md-icon>
+            </md-button>
+            <span class="md-list-item-text" style="margin-left:17px">个人信息</span>
           </md-list-item>
 
           <md-list-item>
@@ -53,22 +74,39 @@
       </md-app-drawer>
 
       <md-app-content style="overflow:hidden">
-        <Content></Content>
+        <md-progress-bar
+          style="margin:-16px 0 0 -18px;width:100vw;"
+          md-mode="indeterminate"
+          v-show="progressbar"
+        ></md-progress-bar>
+        <UserInfo
+          @sync-properties="syncProperties"
+          @start-progressbar="startProgressbar"
+          @stop-progressbar="stopProgressbar"
+          v-show="1==components_switch"
+        ></UserInfo>
+        <Content v-show="!components_switch"></Content>
       </md-app-content>
     </md-app>
   </div>
 </template>
 
 <script>
-import Content from "@/components/Content.vue"
+import Content from "@/components/Content.vue";
+import UserInfo from "@/components/UserInfo.vue";
 
 export default {
   name: "MainPage",
   data: () => ({
-    menuVisible: false
+    menuVisible: false,
+    components_switch: 0,
+    nickname: "昵称",
+    email: "邮箱地址",
+    progressbar: false
   }),
   components: {
-    Content
+    Content,
+    UserInfo
   },
   methods: {
     toggleMenu() {
@@ -76,17 +114,28 @@ export default {
     },
     logout() {
       this.axios.post("/api/logout").then(this.$router.push({ path: "/" }));
+    },
+    show_home() {
+      this.components_switch = 0;
+    },
+    show_person_info() {
+      this.components_switch = 1;
+    },
+    syncProperties(email, nickname) {
+      this.email = email;
+      this.nickname = nickname;
+    },
+    startProgressbar() {
+      this.progressbar = true;
+    },
+    stopProgressbar() {
+      this.progressbar = false;
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.md-apps {
-  border: 1px solid rgba(#000, 0.12);
-  background-color: #000;
-}
-
 // Demo purposes only
 .md-drawer {
   width: 230px;

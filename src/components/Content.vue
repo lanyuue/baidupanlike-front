@@ -1,12 +1,8 @@
 <template>
   <div class="page-container">
     <md-app>
-      
-
       <md-app-drawer md-permanent="full" style="height:100vh;overflow:hidden;">
-        <md-toolbar class="md-transparent" md-elevation="0">
-          Navigation
-        </md-toolbar>
+        <md-toolbar class="md-transparent" md-elevation="0">Navigation</md-toolbar>
 
         <md-list>
           <md-list-item>
@@ -32,28 +28,30 @@
       </md-app-drawer>
 
       <md-app-content>
-        
+        <md-empty-state
+          md-rounded
+          md-icon="access_time"
+          md-label="这里什么都没有.."
+          md-description="Anything you snooze will go here until it's time for it to return to the inbox."
+        ></md-empty-state>
       </md-app-content>
     </md-app>
   </div>
 </template>
 
 <style lang="scss" scoped>
-  .md-app {
-      height: 88vh;
-    
-  }
-   // Demo purposes only
-  .md-drawer {
-    width: 230px;
-    max-width: calc(100vw - 125px);
-  }
-
-  
+.md-app {
+  height: 88vh;
+}
+// Demo purposes only
+.md-drawer {
+  width: 230px;
+  max-width: calc(100vw - 125px);
+}
 </style>
 
 <script>
 export default {
-  name: 'Content'
-}
+  name: "Content"
+};
 </script>
