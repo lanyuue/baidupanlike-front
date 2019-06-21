@@ -21,7 +21,6 @@ export default {
   },
   methods: {
     closeLogin (payload) {
-      console.log('ss')
       this.showLogin = payload;
     }
   }

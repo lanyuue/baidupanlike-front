@@ -6,13 +6,19 @@ import router from './router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import VueMaterial from 'vue-material'
+
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
+import VeeValidate from 'vee-validate';
 
+import { ValidationProvider } from 'vee-validate';
+Vue.component('ValidationProvider', ValidationProvider);
+Vue.use(VeeValidate);
 Vue.config.productionTip = false
 axios.defaults.withCredentials = true
 Vue.use(VueMaterial)
 Vue.use(VueAxios, axios);
+
 
 /* eslint-disable no-new */
 new Vue({

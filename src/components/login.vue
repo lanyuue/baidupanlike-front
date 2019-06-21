@@ -1,15 +1,15 @@
 <template>
   <div>
-    <md-card class="md-accent" v-show=cardsign>
+    <md-card class="md-accent" v-show="cardsign">
       <md-card-header>
         <md-card-header-text>
-          <div class="Primary color" >{{ alert }}</div>
+          <div class="Primary color">{{ alert }}</div>
         </md-card-header-text>
       </md-card-header>
     </md-card>
     <md-field>
       <label>邮箱地址</label>
-      <md-input v-model="email" type="email" placeholder="请输入邮件地址"></md-input>
+      <md-input v-validate="'required|email'" v-model="email" type="email" placeholder="请输入邮件地址"></md-input>
     </md-field>
 
     <md-field>
@@ -68,7 +68,7 @@ export default {
   watch: {
     alert: function() {
       if (alert) {
-        this.cardsign = true
+        this.cardsign = true;
       }
     }
   },
@@ -89,19 +89,17 @@ export default {
         })
         .then(successResponse => {
           this.responseResult = JSON.stringify(successResponse.data);
-          if (
-            successResponse.data.code === 200
-          ) {
-            this.$router.push({ path: "/home" })
-            this.alert = successResponse.data.message
+          if (successResponse.data.code === 200) {
+            this.$router.push({ path: "/home" });
+            this.alert = successResponse.data.message;
           } else {
-            this.alert = successResponse.data.message
+            this.alert = successResponse.data.message;
           }
-        }).then(() => {
-          this.closeA()
+        })
+        .then(() => {
+          this.closeA();
         })
         .catch(failResponse => {});
-      this.closeA();
     },
     register_submit() {
       this.openA();
@@ -116,17 +114,14 @@ export default {
           if (successResponse.data.code === 200) {
             location.reload();
           } else {
-            this.alert = successResponse.data.message
+            this.alert = successResponse.data.message;
           }
-        }).then(() => {
-          this.closeA()
+        })
+        .then(() => {
+          this.closeA();
         })
         .catch(failResponse => {});
-      
-
     },
-
-    
 
     reg() {
       this.signmode = true;

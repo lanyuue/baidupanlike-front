@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <md-app>
-      <md-app-toolbar class="md-primary" md-elevation="0">
+      <md-app-toolbar class="md-primary"  md-elevation="4">
         <div class="md-toolbar-section-end">
           <md-button class="md-icon-button" @click="toggleMenu" v-if="!menuVisible">
             <md-avatar class="md-avatar-icon md-accent" style="background-color:#41B883">V</md-avatar>
@@ -13,7 +13,7 @@
       <md-app-drawer
         class="md-right"
         :md-active.sync="menuVisible"
-        md-right="true"
+        md-right
         md-persistent="mini"
       >
         <md-toolbar class="md-transparent" md-elevation="0">
@@ -51,17 +51,24 @@
         </md-list>
       </md-app-drawer>
 
-      <md-app-content>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error quibusdam, non molestias et! Earum magnam, similique, quo recusandae placeat dicta asperiores modi sint ea.</md-app-content>
+      <md-app-content>
+        <Content></Content>
+      </md-app-content>
     </md-app>
   </div>
 </template>
 
 <script>
+import Content from "@/components/Content.vue"
+
 export default {
   name: "MainPage",
   data: () => ({
     menuVisible: false
   }),
+  components: {
+    Content
+  },
   methods: {
     toggleMenu() {
       this.menuVisible = !this.menuVisible;
