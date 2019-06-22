@@ -21,6 +21,7 @@
     "vue-axios": "^2.1.4",
     "vue-material": "^1.0.0-beta-11",
     "vue-router": "^3.0.1",
+    "vue-simple-uploader": "^0.7.1",
     "vue-validator": "^3.0.0-alpha.2",
     "vuelidate": "^0.7.4"
   },

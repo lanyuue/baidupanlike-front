@@ -109,8 +109,6 @@ export default {
       this.startProgressbar();
       this.axios
         .put("/api/updateuser", {
-
-          
           email: this.email,
           nickname: this.nickname,
           description: this.description,

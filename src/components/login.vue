@@ -51,9 +51,7 @@
           </a>
         </p>
       </md-card-content>
-      
     </md-card>
-    
   </div>
 </template>
 
@@ -134,13 +132,23 @@ export default {
     reg() {
       this.signmode = true;
       this.cardsign = false;
-      document.getElementById("md-card").setAttribute("class","md-card reghover md-theme-default md-with-hover")
+      document
+        .getElementById("md-card")
+        .setAttribute(
+          "class",
+          "md-card reghover md-theme-default md-with-hover"
+        );
     },
 
     login() {
       this.signmode = false;
       this.cardsign = false;
-      document.getElementById("md-card").setAttribute("class","md-card loginhover md-theme-default md-with-hover")
+      document
+        .getElementById("md-card")
+        .setAttribute(
+          "class",
+          "md-card loginhover md-theme-default md-with-hover"
+        );
     },
     closeLogin(payload) {
       this.showProgressbar = payload;
@@ -161,9 +169,11 @@ export default {
   width: 300px;
 }
 .loginhover {
-  width:350px;height:350px;
+  width: 350px;
+  height: 350px;
 }
 .reghover {
-  width:350px;height:410px;
+  width: 350px;
+  height: 410px;
 }
 </style>
