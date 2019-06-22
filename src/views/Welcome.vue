@@ -1,29 +1,28 @@
 <template>
-
-  <div>
-  <md-progress-bar md-mode="indeterminate" v-show="showLogin"  ></md-progress-bar>
-    <Login class="login" @close-login="closeLogin"></Login>
+  <div
+    style="height:100vh;weight:100vw;background:url('https://www.google.com/drive/static/images/home/intro-768.jpg') 50% 50% / cover;overflow:hidden;"
+  >
+    <h1
+      style="position:fixed;text-align:left;color:#fff;font-size:30px;font-weight:400;margin:25px;font-style: normal;"
+    >
+      <b>IBM</b> Drive
+    </h1>
+    <Login class="login"></Login>
   </div>
 </template>
 
 <script>
-import Login from "@/components/Login.vue"
+import Login from "@/components/Login.vue";
 
 export default {
   name: "MainPage",
   components: {
     Login
   },
-  data () {
-    return {
-      showLogin: false
-    }
+  data() {
+    return {};
   },
-  methods: {
-    closeLogin (payload) {
-      this.showLogin = payload;
-    }
-  }
+  methods: {}
 };
 </script>
 
@@ -33,6 +32,5 @@ export default {
   left: 50%;
   top: 50%;
   transform: translate3d(-50%, -50%, 0);
-  width: 300px;
 }
 </style>

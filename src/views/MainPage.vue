@@ -7,7 +7,12 @@
             <md-avatar class="md-avatar-icon md-accent" style="background-color:#41B883">V</md-avatar>
           </md-button>
         </div>
-        <span class="md-title">AldosdDrive</span>
+        <span
+          class="md-title"
+          style="position:fixed;text-align:left;color:#fff;font-size:30px;font-weight:400;padding:0;font-style: normal;"
+        >
+          <b>IBM</b> Drive
+        </span>
       </md-app-toolbar>
 
       <md-app-drawer
@@ -55,13 +60,17 @@
           </md-list-item>
 
           <md-list-item>
-            <md-icon>send</md-icon>
-            <span class="md-list-item-text">Sent Mail</span>
+            <md-button class="md-icon-button" style="margin-left:-7px">
+              <md-icon>people</md-icon>
+            </md-button>
+            <span class="md-list-item-text" style="margin-left:17px">人脉</span>
           </md-list-item>
 
           <md-list-item>
-            <md-icon>delete</md-icon>
-            <span class="md-list-item-text">Trash</span>
+            <md-button class="md-icon-button" style="margin-left:-7px">
+              <md-icon>notifications</md-icon>
+            </md-button>
+            <span class="md-list-item-text" style="margin-left:17px">通知</span>
           </md-list-item>
 
           <md-list-item>

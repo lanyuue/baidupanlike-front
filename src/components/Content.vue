@@ -33,11 +33,26 @@
           md-icon="access_time"
           md-label="这里什么都没有.."
           md-description="Anything you snooze will go here until it's time for it to return to the inbox."
+          v-show=false
         ></md-empty-state>
+        <FileTable></FileTable>
+        <md-button class="md-fab md-primary" style="position:fixed;bottom:130px;right:50px">
+          <md-icon>add</md-icon>
+        </md-button>
       </md-app-content>
     </md-app>
   </div>
 </template>
+
+<script>
+import FileTable from "@/components/FileTable.vue";
+export default {
+  name: "Content",
+  components: {
+    FileTable
+  }
+};
+</script>
 
 <style lang="scss" scoped>
 .md-app {
@@ -49,9 +64,3 @@
   max-width: calc(100vw - 125px);
 }
 </style>
-
-<script>
-export default {
-  name: "Content"
-};
-</script>

@@ -120,7 +120,7 @@ export default {
           this.responseResult = JSON.stringify(successResponse.data);
           if (
             successResponse.data.code === 200 &&
-            successResponse.data.message == "修改成功"
+            successResponse.data.data == "修改成功"
           ) {
             this.loadUserInfo();
             this.switchtoShow();
