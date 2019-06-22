@@ -1,12 +1,13 @@
 <template>
-  <div style="height:88vh">
-    <md-card>
+  <div style="height:100vh">
+    <md-card style="position:relative;z-index：1;">
       <md-card-area>
         <md-card-media>
           <div
             style="background:url('https://hsinyu00.files.wordpress.com/2011/04/cropped-cropped-glacier9401.jpg') 50% 50% / cover;height:250px;"
           ></div>
         </md-card-media>
+
         <md-avatar
           class="md-avatar-icon md-large"
           style="top:-75px;width:150px;height:150px; border-radius:75px"
@@ -51,6 +52,14 @@
         </div>
       </md-card-area>
     </md-card>
+
+    <md-toolbar
+      class="md-accent md-dense"
+      style="top:-550px;margin:0 auto;width:280px"
+      v-show="showalert"
+    >
+      <h3 class="md-title" style="margin:0 auto;font-size:14px;">{{ alert }}</h3>
+    </md-toolbar>
   </div>
 </template>
 
@@ -63,7 +72,9 @@ export default {
       nickname: null,
       description: null,
       showinfo: true,
-      editinfo: false
+      editinfo: false,
+      alert: null,
+      showalert: false
     };
   },
   mounted: function() {
@@ -86,6 +97,7 @@ export default {
             this.description = successResponse.data.data.description;
           } else {
             this.alert = successResponse.data.message;
+            this.showAlert();
           }
         })
         .then(() => {
@@ -96,37 +108,54 @@ export default {
     updateUserinfo() {
       this.startProgressbar();
       this.axios
-        .post("/api/updateuser", {
+        .put("/api/updateuser", {
+
+          
           email: this.email,
           nickname: this.nickname,
-          description: this.description
+          description: this.description,
+          password: "null"
         })
         .then(successResponse => {
           this.responseResult = JSON.stringify(successResponse.data);
-          if (successResponse.data.code === 200) {
+          if (
+            successResponse.data.code === 200 &&
+            successResponse.data.message == "修改成功"
+          ) {
+            this.loadUserInfo();
+            this.switchtoShow();
           } else {
+            this.alert = successResponse.data.message;
+            this.showAlert();
+            this.stopProgressbar();
+            this.loadUserInfo();
           }
         })
-        .then(() => {
-          this.loadUserInfo();
-          this.switchtoShow();
-        })
+        .then(() => {})
         .catch(failResponse => {});
     },
     switchtoShow() {
       this.showinfo = true;
       this.editinfo = false;
       this.stopProgressbar();
+      this.hideAlert();
     },
     switchtoEdit() {
       this.showinfo = false;
       this.editinfo = true;
+      this.hideAlert();
     },
     startProgressbar() {
-      this.$emit("start-progressbar")
+      this.$emit("start-progressbar");
     },
     stopProgressbar() {
-      this.$emit("stop-progressbar")
+      this.$emit("stop-progressbar");
+    },
+    showAlert() {
+      this.showalert = true;
+    },
+    hideAlert() {
+      this.showalert = false;
     }
   }
 };

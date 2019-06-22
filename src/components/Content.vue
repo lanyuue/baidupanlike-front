@@ -41,7 +41,7 @@
 
 <style lang="scss" scoped>
 .md-app {
-  height: 88vh;
+  height: 100vh;
 }
 // Demo purposes only
 .md-drawer {
