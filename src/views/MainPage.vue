@@ -11,7 +11,7 @@
           class="md-title"
           style="position:fixed;text-align:left;color:#fff;font-size:30px;font-weight:400;padding:0;font-style: normal;"
         >
-          <b>IBM</b> Drive
+          <b>L</b> Drive
         </span>
       </md-app-toolbar>
 

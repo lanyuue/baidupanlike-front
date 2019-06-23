@@ -36,23 +36,82 @@
           v-show="false"
         ></md-empty-state>
         <FileTable></FileTable>
-        <md-button class="md-fab md-primary" style="position:fixed;bottom:130px;right:50px">
+        <globalUploader style="position:absolute;z-index:0;bottom:63px;right:0px" @changeButton="changeButton"></globalUploader>
+        <md-button id="md-button" class="md-fab md-primary upload-button-simple" @click="upload">
           <md-icon>add</md-icon>
         </md-button>
+
+        <!-- <button @click="upload">上传</button> -->
+        <!-- <Uploader style="top:-500px;float:right;width:30vw;height:1vh;"></Uploader> -->
       </md-app-content>
     </md-app>
-    <Uploader></Uploader>
   </div>
 </template>
 
 <script>
 import FileTable from "@/components/FileTable.vue";
-import Uploader from "@/components/Uploader.vue";
+import Bus from "./js/bus.js";
+import globalUploader from "@/components/globalUploader.vue";
+
+// import globalUploader from "@/components/globalUploader.vue";
 export default {
   name: "Content",
+  data() {
+    return {
+      buttonPosition: false
+    };
+  },
   components: {
     FileTable,
-    Uploader
+    globalUploader
+    // Uploader
+  },
+  mounted() {
+    // 文件选择后的回调
+    Bus.$on("fileAdded", () => {
+      console.log("文件已选择");
+    });
+
+    // 文件上传成功的回调
+    Bus.$on("fileSuccess", () => {
+      console.log("文件上传成功");
+    });
+  },
+  watch: {
+    buttonPosition: function() {
+      if (this.buttonPosition) {
+        document
+          .getElementById("md-button")
+          .setAttribute(
+            "class",
+            "md-button md-fab md-primary upload-button md-theme-default"
+          );
+      } else {
+        document
+          .getElementById("md-button")
+          .setAttribute(
+            "class",
+            "md-button md-fab md-primary upload-button-simple md-theme-default"
+          );
+      }
+    }
+  },
+  computed: {},
+  methods: {
+    upload() {
+      // 打开文件选择框
+      Bus.$emit("openUploader", {
+        id: "1111" // 传入的参数
+      });
+    },
+
+    changeButton(payload) {
+      this.buttonPosition = payload;
+    }
+  },
+  destroyed() {
+    Bus.$off("fileAdded");
+    Bus.$off("fileSuccess");
   }
 };
 </script>
@@ -65,5 +124,17 @@ export default {
 .md-drawer {
   width: 230px;
   max-width: calc(100vw - 125px);
+}
+.upload-button-simple {
+  position: absolute;
+  z-index: 1;
+  bottom: 130px;
+  right: 50px;
+}
+.upload-button {
+  position: absolute;
+  z-index: 1;
+  bottom: 400px;
+  right: 50px;
 }
 </style>

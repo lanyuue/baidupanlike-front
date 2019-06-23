@@ -5,7 +5,7 @@
     <h1
       style="position:fixed;text-align:left;color:#fff;font-size:30px;font-weight:400;margin:25px;font-style: normal;"
     >
-      <b>IBM</b> Drive
+      <b>L</b> Drive
     </h1>
     <Login class="login"></Login>
   </div>

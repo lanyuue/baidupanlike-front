@@ -6,18 +6,20 @@
 </template>
 
 <script>
-export default {
-  name: "App"
-};
-document.body.addEventListener(
-  "touchmove",
-  function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-  },
-  { passive: false }
-);
+// import globalUploader from "@/components/globalUploader.vue";
 
+export default {
+  name: "App",
+  data() {
+    return {};
+  },
+  components: {
+    // globalUploader
+  },
+  computed: {},
+  created() {},
+  watch: {}
+};
 </script>
 
 <style>

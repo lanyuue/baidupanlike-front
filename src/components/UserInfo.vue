@@ -108,11 +108,11 @@ export default {
     updateUserinfo() {
       this.startProgressbar();
       this.axios
-        .put("/api/updateuser", {
+        .post("/api/updateuser", {
           email: this.email,
           nickname: this.nickname,
-          description: this.description,
-          password: "null"
+          password: "null",
+          description: this.description
         })
         .then(successResponse => {
           this.responseResult = JSON.stringify(successResponse.data);
