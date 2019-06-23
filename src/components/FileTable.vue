@@ -3,7 +3,7 @@
     <md-table
       v-model="searched"
       @md-selected="onSelect"
-      style="max-height:88vh;height:88vh;width:101%;margin:0 auto;overflow:hidden;"
+      style="max-height:88vh;height:88vh;width:101%;margin:0 auto;"
       md-sort="name"
       md-sort-order="asc"
     >
@@ -13,10 +13,10 @@
         </md-field>
       </md-table-toolbar>
       <md-table-empty-state
-        md-label="没有找到文件"
-        :md-description="`没有找到名为'${search}'的文件。请检查拼写或者尝试搜索别的内容`"
+        md-label="No users found"
+        :md-description="`No user found for this '${search}' query. Try a different search term or create a new user.`"
       >
-        <md-button class="md-primary md-raised" @click="newUser">从现在开始上传吧！</md-button>
+        <md-button class="md-primary md-raised" @click="newUser">Create New User</md-button>
       </md-table-empty-state>
 
       <md-table-toolbar slot="md-table-alternate-header" slot-scope="{ count }">
