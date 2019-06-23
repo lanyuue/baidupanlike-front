@@ -108,13 +108,7 @@ export default {
     updateUserinfo() {
       this.startProgressbar();
       this.axios
-<<<<<<< HEAD
         .post("/api/updateuser", {
-=======
-        .put("/api/updateuser", {
-
-          
->>>>>>> parent of f48e00f... 上传模块草稿
           email: this.email,
           nickname: this.nickname,
           password: "null",

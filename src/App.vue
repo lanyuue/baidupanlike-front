@@ -9,7 +9,6 @@
 // import globalUploader from "@/components/globalUploader.vue";
 
 export default {
-<<<<<<< HEAD
   name: "App",
   data() {
     return {};
@@ -21,14 +20,7 @@ export default {
   created() {},
   watch: {}
 };
-=======
-  name: 'App'
-}
-document.body.addEventListener('touchmove', function(e){
-        e.preventDefault();
-        e.stopPropagation();
-    }, { passive: false });
->>>>>>> parent of f48e00f... 上传模块草稿
+
 </script>
 
 <style>

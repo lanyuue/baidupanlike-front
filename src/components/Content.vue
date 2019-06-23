@@ -50,13 +50,10 @@
 
 <script>
 import FileTable from "@/components/FileTable.vue";
-<<<<<<< HEAD
+
 import Bus from "./js/bus.js";
 import globalUploader from "@/components/globalUploader.vue";
 
-// import globalUploader from "@/components/globalUploader.vue";
-=======
->>>>>>> parent of f48e00f... 上传模块草稿
 export default {
   name: "Content",
   data() {
@@ -65,7 +62,6 @@ export default {
     };
   },
   components: {
-<<<<<<< HEAD
     FileTable,
     globalUploader
     // Uploader
@@ -116,9 +112,6 @@ export default {
   destroyed() {
     Bus.$off("fileAdded");
     Bus.$off("fileSuccess");
-=======
-    FileTable
->>>>>>> parent of f48e00f... 上传模块草稿
   }
 };
 </script>
