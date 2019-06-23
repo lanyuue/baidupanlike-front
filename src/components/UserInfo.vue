@@ -92,7 +92,7 @@ export default {
           this.responseResult = JSON.stringify(successResponse.data);
           if (successResponse.data.code === 200) {
             this.email = successResponse.data.data.email;
-            this.password = successResponse.data.data.password;
+            // this.password = successResponse.data.data.password;
             this.nickname = successResponse.data.data.nickname;
             this.description = successResponse.data.data.description;
           } else {
@@ -111,7 +111,7 @@ export default {
         .post("/api/updateuser", {
           email: this.email,
           nickname: this.nickname,
-          password: "null",
+          password: "this.password",
           description: this.description
         })
         .then(successResponse => {
@@ -120,16 +120,17 @@ export default {
             successResponse.data.code === 200 &&
             successResponse.data.data == "修改成功"
           ) {
-            this.loadUserInfo();
+            
             this.switchtoShow();
           } else {
             this.alert = successResponse.data.message;
             this.showAlert();
             this.stopProgressbar();
-            this.loadUserInfo();
           }
         })
-        .then(() => {})
+        .then(() => {
+          this.loadUserInfo();
+        })
         .catch(failResponse => {});
     },
     switchtoShow() {
