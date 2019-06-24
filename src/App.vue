@@ -1,21 +1,16 @@
 <template>
   <div id="app">
-    
     <router-view/>
   </div>
 </template>
 
 <script>
-// import globalUploader from "@/components/globalUploader.vue";
-
 export default {
   name: "App",
   data() {
     return {};
   },
-  components: {
-    // globalUploader
-  },
+  components: {},
   computed: {},
   created() {},
   watch: {}
@@ -24,7 +19,7 @@ export default {
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

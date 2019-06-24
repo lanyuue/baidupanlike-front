@@ -120,7 +120,6 @@ export default {
             successResponse.data.code === 200 &&
             successResponse.data.data == "修改成功"
           ) {
-            
             this.switchtoShow();
           } else {
             this.alert = successResponse.data.message;

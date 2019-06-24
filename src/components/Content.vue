@@ -33,10 +33,13 @@
           md-icon="access_time"
           md-label="这里什么都没有.."
           md-description="Anything you snooze will go here until it's time for it to return to the inbox."
-          v-show=false
+          v-show="false"
         ></md-empty-state>
         <FileTable></FileTable>
-        <globalUploader style="position:absolute;z-index:0;bottom:63px;right:0px" @changeButton="changeButton"></globalUploader>
+        <globalUploader
+          style="position:fixed;z-index:0;bottom:73px;right:0px;"
+          @changeButton="changeButton"
+        ></globalUploader>
         <md-button id="md-button" class="md-fab md-primary upload-button-simple" @click="upload">
           <md-icon>add</md-icon>
         </md-button>

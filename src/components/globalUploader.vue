@@ -6,9 +6,8 @@
       :options="options"
       :autoStart="false"
       @file-added="onFileAdded"
-      @file-success="onFileSuccess"
+      @file-success="fileComplete"
       @file-progress="onFileProgress"
-      @file-error="onFileError"
       class="uploader-app"
     >
       <uploader-unsupport></uploader-unsupport>
@@ -17,20 +16,43 @@
 
       <uploader-list v-show="panelShow">
         <div class="file-panel" slot-scope="props" :class="{'collapse': collapse}">
-          <div class="file-title">
-            <h2>文件列表</h2>
-            <div class="operate">
-              <button @click="fileListShow" type="text" :title="collapse ? '展开':'折叠' ">
-                <i class="iconfont" :class="collapse ? 'inuc-fullscreen': 'inuc-minus-round'"></i>
-              </button>
-              <button @click="close" type="text" title="关闭">
-                <i class="iconfont icon-close"></i>
-              </button>
+          <div class="file-title" style="margin-top:-5px;height:50px">
+            <!-- <h2>上传队列</h2> -->
+            <div class="operate" style="margin-top:8px;margin-right:-14px;">
+              <md-button
+                class="md-icon-button md-dense md-primary"
+                @click="fileListShow"
+                type="text"
+                :title="collapse ? '展开':'折叠' "
+              >
+                <md-icon
+                  class="iconfont icon-close"
+                  v-show="collapse"
+                  :class="collapse ? 'minimize': 'minimize'"
+                >check_box_outline_blank</md-icon>
+                <md-icon
+                  class="iconfont icon-close"
+                  v-show="!collapse"
+                  :class="collapse ? 'minimize': 'maxmize'"
+                >minimize</md-icon>
+              </md-button>
+              <md-button
+                class="md-icon-button md-dense md-primary md-accent"
+                @click="close"
+                type="text"
+                title="关闭"
+              >
+                <md-icon class="iconfont icon-close">clear</md-icon>
+              </md-button>
             </div>
           </div>
 
-          <ul class="file-list">
-            <li v-for="file in props.fileList" :key="file.id">
+          <ul class="file-list" style="margin-top:-8px;margin-bottom:0px">
+            <li
+              v-for="file in props.fileList"
+              :key="file.id"
+              style="text-align:left;list-style-type:none;margin-left:-40px;"
+            >
               <uploader-file :class="'file_' + file.id" ref="files" :file="file" :list="true"></uploader-file>
             </li>
             <div class="no-file" v-if="!props.fileList.length">
@@ -54,32 +76,60 @@
 import { ACCEPT_CONFIG } from "./js/config";
 import Bus from "./js/bus";
 import SparkMD5 from "spark-md5";
+import qs from "qs";
+import $ from "jquery";
 
 export default {
   data() {
     return {
       options: {
-        // target: api.simpleUploadURL,
-        chunkSize: "2048000",
+        target: "/api/uploader/chunk",
+        chunkSize: "4096000",
         fileParameterName: "upfile",
         maxChunkRetries: 3,
-        testChunks: true, //是否开启服务器分片校验
-        // 服务器分片校验函数，秒传及断点续传基础
+        testChunks: false, //是否开启服务器分片校验
         checkChunkUploadedByResponse: function(chunk, message) {
-          let objMessage = JSON.parse(message);
-          if (objMessage.skipUpload) {
+          if (message == "文件已存在") {
             return true;
+          } else {
+            return false;
           }
+          // console.log("分片检查")
+          // console.log(message)
+          // console.log("分片检查")
+          // console.log("分片检查")
+          // var objMessage = {};
+          // try {
+          //   objMessage = JSON.parse(message);
+          //   console.log(objMessage)
+          // } catch (e) {}
+          // // fake response
+          // // objMessage.uploaded_chunks = [2, 3, 4, 5, 6, 8, 10, 11, 12, 13, 17, 20, 21]
+          // // check the chunk is uploaded
 
-          return (objMessage.uploaded || []).indexOf(chunk.offset + 1) >= 0;
-        },
-        // headers: {
-        //   Authorization: Ticket.get() && "Bearer " + Ticket.get().access_token
+          //   console.log((objMessage.uploaded_chunks || []).indexOf(chunk.offset + 1) >= 0)
+
+          // return (true
+          //   // (objMessage.uploaded_chunks || []).indexOf(chunk.offset + 1) >= 0
+          // );
+        }
+        // 服务器分片校验函数，秒传及断点续传基础
+        // checkChunkUploadedByResponse: function(chunk, message) {
+        //   let objMessage = JSON.parse(message);
+        //   if (objMessage.skipUpload) {
+        //     return true;
+        //   }
+
+        //   return (objMessage.uploaded || []).indexOf(chunk.offset + 1) >= 0;
         // },
-        query() {}
+        // // headers: {
+        // //   Authorization: Ticket.get() && "Bearer " + Ticket.get().access_token
+        // // },
+        // query() {}
       },
       attrs: {
-        accept: ACCEPT_CONFIG.getAll()
+        accept: "*/*"
+        //        accept: ACCEPT_CONFIG.getAll()
       },
       panelShow: false, //选择文件后，展示上传panel
       collapse: false
@@ -92,7 +142,6 @@ export default {
 
       if (this.$refs.uploadBtn) {
         document.getElementById("global-uploader-btn").click();
-        // $("#global-uploader-btn").click();
       }
     });
   },
@@ -106,7 +155,6 @@ export default {
     onFileAdded(file) {
       Bus.$emit("fileAdded");
       this.panelShow = true;
-      console.log(this.panelShow);
 
       this.computeMD5(file);
     },
@@ -117,41 +165,63 @@ export default {
           1024} ~ ${chunk.endByte / 1024 / 1024}`
       );
     },
-    onFileSuccess(rootFile, file, response, chunk) {
-      let res = JSON.parse(response);
+    // onFileSuccess(rootFile, file, response, chunk) {
+    //   console.log("开始合并")
+    //   let res = JSON.parse(response);
 
-      // 服务器自定义的错误，这种错误是Uploader无法拦截的
-      if (!res.result) {
-        this.$message({ message: res.message, type: "error" });
-        return;
-      }
+    //   // 服务器自定义的错误，这种错误是Uploader无法拦截的
+    //   if (!res.result) {
+    //     this.$message({ message: res.message, type: "error" });
+    //     return;
+    //   }
 
-      // 如果服务端返回需要合并
-      if (res.needMerge) {
-        api
-          .mergeSimpleUpload({
-            tempName: res.tempName,
-            fileName: file.name,
-            ...this.params
+    //   // 如果服务端返回需要合并
+    //   if (res.needMerge) {
+    //     api
+    //       .mergeSimpleUpload({
+    //         tempName: res.tempName,
+    //         fileName: file.name,
+    //         ...this.params
+    //       })
+    //       .then(res => {
+    //         // 文件合并成功
+    //         Bus.$emit("fileSuccess");
+    //       })
+    //       .catch(e => {});
+
+    //     // 不需要合并
+    //   } else {
+    //     Bus.$emit("fileSuccess");
+    //     console.log("上传成功");
+    //   }
+    // },
+
+    fileComplete() {
+      console.log("file complete", arguments);
+      const file = arguments[0].file;
+      this.axios
+        .post(
+          "/api/uploader/mergeFile",
+          qs.stringify({
+            filename: file.name,
+            identifier: arguments[0].uniqueIdentifier,
+            totalSize: file.size,
+            type: file.type
           })
-          .then(res => {
-            // 文件合并成功
-            Bus.$emit("fileSuccess");
-          })
-          .catch(e => {});
-
-        // 不需要合并
-      } else {
-        Bus.$emit("fileSuccess");
-        console.log("上传成功");
-      }
+        )
+        .then(function(response) {
+          console.log(response);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     },
-    onFileError(rootFile, file, response, chunk) {
-      this.$message({
-        message: response,
-        type: "error"
-      });
-    },
+    // onFileError(rootFile, file, response, chunk) {
+    //   this.$message({
+    //     message: response,
+    //     type: "error"
+    //   });
+    // },
 
     /**
      * 计算md5，实现断点续传及秒传
@@ -204,9 +274,11 @@ export default {
       if ($list.is(":visible")) {
         $list.slideUp();
         this.collapse = true;
+        this.$emit("changeButton", false);
       } else {
         $list.slideDown();
         this.collapse = false;
+        this.$emit("changeButton", true);
       }
     },
     close() {
@@ -225,13 +297,13 @@ export default {
     }
   },
   watch: {
-      panelShow: function() {
-          if(this.panelShow) {
-              this.$emit("changeButton", true)
-          } else {
-              this.$emit("changeButton", false)
-          }
+    panelShow: function() {
+      if (this.panelShow) {
+        this.$emit("changeButton", true);
+      } else {
+        this.$emit("changeButton", false);
       }
+    }
   },
   destroyed() {
     Bus.$off("openUploader");
@@ -256,6 +328,7 @@ export default {
     border: 1px solid #e2e2e2;
     border-radius: 7px 7px 0 0;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    top: -100px;
 
     .file-title {
       display: flex;

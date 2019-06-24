@@ -7,14 +7,16 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import VueMaterial from 'vue-material'
 import uploader from 'vue-simple-uploader'
-Vue.use(uploader)
+
+
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
 
 Vue.config.productionTip = false
 axios.defaults.withCredentials = true
 Vue.use(VueMaterial)
-Vue.use(VueAxios, axios);
+Vue.use(VueAxios, axios)
+Vue.use(uploader)
 
 
 /* eslint-disable no-new */

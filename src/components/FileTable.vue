@@ -3,7 +3,7 @@
     <md-table
       v-model="searched"
       @md-selected="onSelect"
-      style="max-height:88vh;height:88vh;width:101%;margin:0 auto;"
+      style="max-height:88vh;height:88vh;width:101%;margin:0 auto;overflow:hidden;"
       md-sort="name"
       md-sort-order="asc"
     >
