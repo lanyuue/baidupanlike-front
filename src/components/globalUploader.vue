@@ -1,6 +1,5 @@
 <template>
   <div id="global-uploader">
-    <!-- 上传 -->
     <uploader
       ref="uploader"
       :options="options"
@@ -8,6 +7,7 @@
       @file-added="onFileAdded"
       @file-success="fileComplete"
       @file-progress="onFileProgress"
+      @file-error="onFileError"
       class="uploader-app"
     >
       <uploader-unsupport></uploader-unsupport>
@@ -30,12 +30,14 @@
                   v-show="collapse"
                   :class="collapse ? 'minimize': 'minimize'"
                 >check_box_outline_blank</md-icon>
+
                 <md-icon
                   class="iconfont icon-close"
                   v-show="!collapse"
                   :class="collapse ? 'minimize': 'maxmize'"
                 >minimize</md-icon>
               </md-button>
+
               <md-button
                 class="md-icon-button md-dense md-primary md-accent"
                 @click="close"
@@ -55,6 +57,7 @@
             >
               <uploader-file :class="'file_' + file.id" ref="files" :file="file" :list="true"></uploader-file>
             </li>
+
             <div class="no-file" v-if="!props.fileList.length">
               <i class="iconfont icon-empty-file"></i> 暂无待上传文件
             </div>
@@ -94,48 +97,17 @@ export default {
           } else {
             return false;
           }
-          // console.log("分片检查")
-          // console.log(message)
-          // console.log("分片检查")
-          // console.log("分片检查")
-          // var objMessage = {};
-          // try {
-          //   objMessage = JSON.parse(message);
-          //   console.log(objMessage)
-          // } catch (e) {}
-          // // fake response
-          // // objMessage.uploaded_chunks = [2, 3, 4, 5, 6, 8, 10, 11, 12, 13, 17, 20, 21]
-          // // check the chunk is uploaded
-
-          //   console.log((objMessage.uploaded_chunks || []).indexOf(chunk.offset + 1) >= 0)
-
-          // return (true
-          //   // (objMessage.uploaded_chunks || []).indexOf(chunk.offset + 1) >= 0
-          // );
         }
-        // 服务器分片校验函数，秒传及断点续传基础
-        // checkChunkUploadedByResponse: function(chunk, message) {
-        //   let objMessage = JSON.parse(message);
-        //   if (objMessage.skipUpload) {
-        //     return true;
-        //   }
-
-        //   return (objMessage.uploaded || []).indexOf(chunk.offset + 1) >= 0;
-        // },
-        // // headers: {
-        // //   Authorization: Ticket.get() && "Bearer " + Ticket.get().access_token
-        // // },
-        // query() {}
       },
       attrs: {
         accept: "*/*"
         //        accept: ACCEPT_CONFIG.getAll()
       },
-      panelShow: false, //选择文件后，展示上传panel
+      panelShow: false,
       collapse: false
     };
   },
-  created() {},
+
   mounted() {
     Bus.$on("openUploader", query => {
       this.params = query || {};
@@ -145,24 +117,22 @@ export default {
       }
     });
   },
+
   computed: {
     //Uploader实例
     uploader() {
       return this.$refs.uploader.uploader;
     }
   },
-  methods: {
-    syncfile() {
-      console.log("1111")
-      // Bus.$emit("syncFiles")
-    },
 
+  methods: {
     onFileAdded(file) {
       Bus.$emit("fileAdded");
       this.panelShow = true;
 
       this.computeMD5(file);
     },
+
     onFileProgress(rootFile, file, chunk) {
       console.log(
         `上传中 ${file.name}，chunk：${chunk.startByte /
@@ -170,36 +140,6 @@ export default {
           1024} ~ ${chunk.endByte / 1024 / 1024}`
       );
     },
-    // onFileSuccess(rootFile, file, response, chunk) {
-    //   console.log("开始合并")
-    //   let res = JSON.parse(response);
-
-    //   // 服务器自定义的错误，这种错误是Uploader无法拦截的
-    //   if (!res.result) {
-    //     this.$message({ message: res.message, type: "error" });
-    //     return;
-    //   }
-
-    //   // 如果服务端返回需要合并
-    //   if (res.needMerge) {
-    //     api
-    //       .mergeSimpleUpload({
-    //         tempName: res.tempName,
-    //         fileName: file.name,
-    //         ...this.params
-    //       })
-    //       .then(res => {
-    //         // 文件合并成功
-    //         Bus.$emit("fileSuccess");
-    //       })
-    //       .catch(e => {});
-
-    //     // 不需要合并
-    //   } else {
-    //     Bus.$emit("fileSuccess");
-    //     console.log("上传成功");
-    //   }
-    // },
 
     fileComplete() {
       console.log("file complete", arguments);
@@ -222,12 +162,13 @@ export default {
           console.log(error);
         });
     },
-    // onFileError(rootFile, file, response, chunk) {
-    //   this.$message({
-    //     message: response,
-    //     type: "error"
-    //   });
-    // },
+
+    onFileError(rootFile, file, response, chunk) {
+      this.$message({
+        message: response,
+        type: "error"
+      });
+    },
 
     /**
      * 计算md5，实现断点续传及秒传

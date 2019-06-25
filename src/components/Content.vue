@@ -35,20 +35,30 @@
           md-description="Anything you snooze will go here until it's time for it to return to the inbox."
           v-show="false"
         ></md-empty-state>
-        <FileTable></FileTable>
+
+        <FileTable @changeDownloadStatus="changeDownloadStatus"></FileTable>
+
         <globalUploader
           style="position:fixed;z-index:0;bottom:73px;right:0px;"
           @changeButton="changeButton"
         ></globalUploader>
-        <md-button id="md-button" class="md-fab md-accent download-button-simple" @click="upload">
+
+        <md-button
+          id="md-button-download"
+          class="md-fab md-accent download-button-simple"
+          @click="download"
+          v-show="downloadReady"
+        >
           <md-icon>vertical_align_bottom</md-icon>
         </md-button>
-        <md-button id="md-button" class="md-fab md-primary upload-button-simple" @click="upload">
+
+        <md-button
+          id="md-button-upload"
+          class="md-fab md-primary upload-button-simple"
+          @click="upload"
+        >
           <md-icon>add</md-icon>
         </md-button>
-
-        <!-- <button @click="upload">上传</button> -->
-        <!-- <Uploader style="top:-500px;float:right;width:30vw;height:1vh;"></Uploader> -->
       </md-app-content>
     </md-app>
   </div>
@@ -64,14 +74,15 @@ export default {
   name: "Content",
   data() {
     return {
-      buttonPosition: false
+      buttonPosition: false,
+      downloadReady: false
     };
   },
   components: {
     FileTable,
     globalUploader
-    // Uploader
   },
+
   mounted() {
     // 文件选择后的回调
     Bus.$on("fileAdded", () => {
@@ -83,26 +94,39 @@ export default {
       console.log("文件上传成功");
     });
   },
+
   watch: {
     buttonPosition: function() {
       if (this.buttonPosition) {
         document
-          .getElementById("md-button")
+          .getElementById("md-button-upload")
           .setAttribute(
             "class",
             "md-button md-fab md-primary upload-button md-theme-default"
           );
+        document
+          .getElementById("md-button-download")
+          .setAttribute(
+            "class",
+            "md-button md-fab md-accent download-button md-theme-default"
+          );
       } else {
         document
-          .getElementById("md-button")
+          .getElementById("md-button-upload")
           .setAttribute(
             "class",
             "md-button md-fab md-primary upload-button-simple md-theme-default"
           );
+        document
+          .getElementById("md-button-download")
+          .setAttribute(
+            "class",
+            "md-button md-fab md-accent download-button-simple md-theme-default"
+          );
       }
     }
   },
-  computed: {},
+
   methods: {
     upload() {
       // 打开文件选择框
@@ -111,10 +135,17 @@ export default {
       });
     },
 
+    download() {},
+
+    changeDownloadStatus(payload) {
+      this.downloadReady = payload;
+    },
+
     changeButton(payload) {
       this.buttonPosition = payload;
     }
   },
+  
   destroyed() {
     Bus.$off("fileAdded");
     Bus.$off("fileSuccess");

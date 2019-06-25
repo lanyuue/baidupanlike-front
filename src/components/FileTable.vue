@@ -12,6 +12,7 @@
           <md-input placeholder="搜索您的文件..." v-model="search" @input="searchOnTable"/>
         </md-field>
       </md-table-toolbar>
+
       <md-table-empty-state>
         <md-empty-state
           md-rounded
@@ -19,17 +20,10 @@
           md-label="这里什么都没有.."
           md-description="现在就开始上传吧！"
         ></md-empty-state>
-
-        <!-- <md-button class="md-primary md-raised" @click="newUser">上传</md-button> -->
       </md-table-empty-state>
 
       <md-table-toolbar slot="md-table-alternate-header" slot-scope="{ count }">
-        <div class="md-toolbar-section-start">
-          {{ getAlternateLabel(count) }}
-          <!-- <md-button class="md-icon-button">
-            <md-icon>delete</md-icon>
-          </md-button>-->
-        </div>
+        <div class="md-toolbar-section-start">{{ getAlternateLabel(count) }}</div>
 
         <div class="md-toolbar-section-end">
           <md-button class="md-icon-button" @click="deleteFiles">
@@ -50,7 +44,7 @@
           md-label="文件名"
           md-sort-by="filename"
         >{{ item.filename }}</md-table-cell>
-        <!-- <md-table-cell style="text-align:left" md-label="描述" md-sort-by="email">{{ item.totalSize / 1024 }}</md-table-cell> -->
+
         <md-table-cell
           style="text-align:left"
           md-label="大小"
@@ -59,9 +53,6 @@
         <md-table-cell style="text-align:left" md-label="修改时间" md-sort-by="time">{{ item.time }}</md-table-cell>
       </md-table-row>
     </md-table>
-    <!-- 
-    <p>selectedIDs:</p>
-    {{ selectedIDs }}-->
   </div>
 </template>
 
@@ -76,7 +67,6 @@ const searchByName = (items, term) => {
   if (term) {
     return items.filter(item => toLower(item.filename).includes(toLower(term)));
   }
-
   return items;
 };
 
@@ -87,15 +77,7 @@ export default {
     searched: [],
     selected: [],
     selectedIDs: [],
-    files: [
-      //   {
-      //     id: 1,
-      //     name: "Shawna Dubbin",
-      //     id: "sdubbin0@geocities.com",
-      //     gender: "Male",
-      //     title: "Assistant Media Planner"
-      //   },
-    ]
+    files: []
   }),
 
   filters: {
@@ -115,20 +97,19 @@ export default {
       this.selected = items;
       this.selectedIDs = map;
     },
+
     getAlternateLabel(count) {
       let plural = "";
-
       if (count > 1) {
         plural = "s";
       }
-
       return `${count} user${plural} selected`;
     },
 
     searchOnTable() {
       this.searched = searchByName(this.files, this.search);
     },
-
+    
     syncFiles() {
       this.axios
         .get("/api/files/pull")
@@ -166,6 +147,12 @@ export default {
     Bus.$on("syncFiles", () => {
       this.syncFiles();
     });
+  },
+
+  watch: {
+    selected: function() {
+      this.$emit("changeDownloadStatus", this.selected.length != 0);
+    }
   }
 };
 </script>
