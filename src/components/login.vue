@@ -118,7 +118,7 @@ export default {
         .then(successResponse => {
           this.responseResult = JSON.stringify(successResponse.data);
           if (successResponse.data.code === 200) {
-            location.reload();
+            this.login()
           } else {
             this.alert = successResponse.data.message;
           }

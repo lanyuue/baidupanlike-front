@@ -152,6 +152,11 @@ export default {
     }
   },
   methods: {
+    syncfile() {
+      console.log("1111")
+      // Bus.$emit("syncFiles")
+    },
+
     onFileAdded(file) {
       Bus.$emit("fileAdded");
       this.panelShow = true;
@@ -209,8 +214,9 @@ export default {
             type: file.type
           })
         )
-        .then(function(response) {
-          console.log(response);
+        .then(function() {
+          // this.sync();
+          Bus.$emit("syncFiles")
         })
         .catch(function(error) {
           console.log(error);

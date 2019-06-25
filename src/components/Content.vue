@@ -40,6 +40,9 @@
           style="position:fixed;z-index:0;bottom:73px;right:0px;"
           @changeButton="changeButton"
         ></globalUploader>
+        <md-button id="md-button" class="md-fab md-accent download-button-simple" @click="upload">
+          <md-icon>vertical_align_bottom</md-icon>
+        </md-button>
         <md-button id="md-button" class="md-fab md-primary upload-button-simple" @click="upload">
           <md-icon>add</md-icon>
         </md-button>
@@ -53,9 +56,9 @@
 
 <script>
 import FileTable from "@/components/FileTable.vue";
+import globalUploader from "@/components/globalUploader.vue";
 
 import Bus from "./js/bus.js";
-import globalUploader from "@/components/globalUploader.vue";
 
 export default {
   name: "Content",
@@ -137,7 +140,19 @@ export default {
 .upload-button {
   position: absolute;
   z-index: 1;
-  bottom: 400px;
+  bottom: 380px;
   right: 50px;
+}
+.download-button-simple {
+  position: absolute;
+  z-index: 1;
+  bottom: 130px;
+  right: 120px;
+}
+.download-button {
+  position: absolute;
+  z-index: 1;
+  bottom: 380px;
+  right: 120px;
 }
 </style>
