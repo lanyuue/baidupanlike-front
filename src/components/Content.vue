@@ -139,8 +139,6 @@ export default {
 
     download() {
       Bus.$emit("startDownload")
-
-
     },
 
     changeDownloadStatus(payload) {

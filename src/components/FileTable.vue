@@ -118,7 +118,7 @@ export default {
     setOnmessageMessage(event) {
       // 根据服务器推送的消息做自己的业务处理
       console.log("服务端返回：" + event.data);
-      this.websocket = event.data
+      this.progress = event.data;
     },
     setOncloseMessage() {
       console.log("WebSocket连接关闭    状态码：" + this.websocket.readyState);
@@ -131,6 +131,7 @@ export default {
     },
 
     onSelect(items) {
+      console.log(items);
       let map = items.map(item => item.identifier);
       this.selected = items;
       this.selectedIDs = map;
@@ -154,10 +155,8 @@ export default {
         .get("/api/files/pull")
         .then(successResponse => {
           let response = successResponse.data.data;
-          console.log(this.files);
           this.files = response;
           this.searched = response;
-          console.log(this.files);
         })
         .then(() => {
           this.closeA();
@@ -177,28 +176,11 @@ export default {
           } else {
           }
         });
-    }
-  },
+    },
 
-  mounted: function() {
-    this.searched = this.files;
-    this.syncFiles();
-    console.log("1");
-
-    console.log("2");
-
-    Bus.$on("syncFiles", () => {
-      this.syncFiles();
-    });
-
-    Bus.$on("startDownload", () => {
-      this.initWebSocket();
-      // this.initWebSocket();
-      this.$fetch.checkLogin.call(this);
-      // this.axios.get("api/files/sendAllWebSocket");
-      this.axios({
+    async down_clear() {
+      await this.axios({
         method: "post",
-        headers: { filename: "utf-8" },
         url: "/api/files/download",
         data: {
           identifiers: this.selectedIDs
@@ -214,10 +196,9 @@ export default {
         );
         const link = document.createElement("a");
         let head = response.headers["content-disposition"];
-        console.log(head);
         if (head) {
           try {
-            fname = decodeURI(head.split('"')[3]);
+            fname = decodeURI(head.split("=")[1]);
             console.log(fname);
           } catch (err) {
             console.log("can not get file name");
@@ -227,15 +208,39 @@ export default {
         link.setAttribute("download", fname);
         document.body.appendChild(link);
         link.click();
-        this.onbeforeunload();
       });
+      this.onbeforeunload();
+    }
+  },
+
+  mounted: function() {
+    this.searched = this.files;
+    this.syncFiles();
+
+    Bus.$on("syncFiles", () => {
+      this.syncFiles();
     });
+
+    Bus.$on("startDownload", () => {
+      this.initWebSocket();
+      this.$fetch.checkLogin.call(this);
+      this.down_clear();
+    });
+  },
+  destroyed() {
+    try {
+      this.websocket.close();
+    } catch (error) {}
   },
 
   watch: {
     selected: function() {
       this.$emit("changeDownloadStatus", this.selected.length != 0);
     }
+  },
+
+  beforeDestroy() {
+    Bus.$off("startDownload");
   }
 };
 </script>
