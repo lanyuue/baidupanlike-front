@@ -133,9 +133,15 @@ export default {
       Bus.$emit("openUploader", {
         id: "1111" // 传入的参数
       });
+
+
     },
 
-    download() {},
+    download() {
+      Bus.$emit("startDownload")
+
+
+    },
 
     changeDownloadStatus(payload) {
       this.downloadReady = payload;
@@ -145,7 +151,7 @@ export default {
       this.buttonPosition = payload;
     }
   },
-  
+
   destroyed() {
     Bus.$off("fileAdded");
     Bus.$off("fileSuccess");

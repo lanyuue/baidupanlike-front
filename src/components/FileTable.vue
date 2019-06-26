@@ -109,7 +109,7 @@ export default {
     searchOnTable() {
       this.searched = searchByName(this.files, this.search);
     },
-    
+
     syncFiles() {
       this.axios
         .get("/api/files/pull")
@@ -138,6 +138,19 @@ export default {
           }
         });
     }
+    // download(data) {
+    //   if (!data) {
+    //     return;
+    //   }
+    //   let url = window.URL.createObjectURL(new Blob([data]));
+    //   let link = document.createElement("a");
+    //   link.style.display = "none";
+    //   link.href = url;
+    //   link.setAttribute("download", "excel.xlsx");
+
+    //   document.body.appendChild(link);
+    //   link.click();
+    // }
   },
 
   mounted: function() {
@@ -146,6 +159,42 @@ export default {
 
     Bus.$on("syncFiles", () => {
       this.syncFiles();
+    });
+
+    Bus.$on("startDownload", () => {
+      this.axios({
+        method: "post",
+        headers: { filename: "utf-8" },
+        url: "/api/files/download",
+        data: {
+          identifiers: this.selectedIDs
+        },
+        responseType: "blob"
+      }).then(response => {
+        
+        let fname = "undefined";
+        let type = response.headers["content-type"];
+        const url = window.URL.createObjectURL(
+          new Blob([response.data], {
+            type: type == "application/json" ? "application/octet-stream" : type
+          })
+        );
+        const link = document.createElement("a");
+        let head = response.headers["content-disposition"];
+        console.log(head);
+        if (head) {
+          try {
+            fname = decodeURI(head.split('"')[3]);
+            console.log(fname);
+          } catch (err) {
+            console.log("can not get file name");
+          }
+        }
+        link.href = url;
+        link.setAttribute("download", fname);
+        document.body.appendChild(link);
+        link.click();
+      });
     });
   },
 

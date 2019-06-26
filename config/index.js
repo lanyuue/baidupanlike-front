@@ -16,9 +16,9 @@ module.exports = {
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
+        }
       }
-      }
-      
+
     },
 
     // Various Dev Server settings
