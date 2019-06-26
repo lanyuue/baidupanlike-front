@@ -142,8 +142,8 @@ export default {
     },
 
     fileComplete() {
-      console.log("file complete", arguments);
       const file = arguments[0].file;
+      this.$fetch.checkLogin;
       this.axios
         .post(
           "/api/uploader/mergeFile",
@@ -156,7 +156,7 @@ export default {
         )
         .then(function() {
           // this.sync();
-          Bus.$emit("syncFiles")
+          Bus.$emit("syncFiles");
         })
         .catch(function(error) {
           console.log(error);

@@ -7,6 +7,7 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import VueMaterial from 'vue-material'
 import uploader from 'vue-simple-uploader'
+import Fetch from "@/components/js/fetch.js"
 
 
 import 'vue-material/dist/vue-material.min.css'
@@ -17,10 +18,12 @@ axios.defaults.withCredentials = true
 Vue.use(VueMaterial)
 Vue.use(VueAxios, axios)
 Vue.use(uploader)
+Vue.prototype.$fetch = new Fetch()
+
 
 
 /* eslint-disable no-new */
-new Vue({
+const vueP = new Vue({
   el: '#app',
   router,
   components: { App },
@@ -38,12 +41,18 @@ new Vue({
         .then(successResponse => {
           this.responseResult = JSON.stringify(successResponse.data)
           if (successResponse.data.code === 200 && successResponse.data.message === '认证成功') {
-            this.$router.push({ path: '/home' })
+            this.$router.push({
+              path: '/home'
+            })
           } else {
-            this.$router.push({ path: '/' })
+            this.$router.push({
+              path: '/'
+            })
           }
         })
-        .catch(failResponse => { });
+        .catch(failResponse => {});
     }
+  
   }
+
 })

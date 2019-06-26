@@ -17,7 +17,14 @@ module.exports = {
         pathRewrite: {
           '^/api': ''
         }
-      }
+      },
+      // '/ws': {
+      //   target: 'ws://localhost:8090',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     '^/ws': ''
+      //   }
+      // }
 
     },
 

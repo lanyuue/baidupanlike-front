@@ -83,54 +83,59 @@ export default {
   },
   methods: {
     syncPropertites() {
+      this.$fetch.checkLogin.call(this);
       this.$emit("sync-properties", this.email, this.nickname);
     },
     loadUserInfo() {
-      this.axios
-        .post("/api/userinfo")
-        .then(successResponse => {
-          this.responseResult = JSON.stringify(successResponse.data);
-          if (successResponse.data.code === 200) {
-            this.email = successResponse.data.data.email;
-            // this.password = successResponse.data.data.password;
-            this.nickname = successResponse.data.data.nickname;
-            this.description = successResponse.data.data.description;
-          } else {
-            this.alert = successResponse.data.message;
-            this.showAlert();
-          }
-        })
-        .then(() => {
-          this.syncPropertites();
-        })
-        .catch(failResponse => {});
+      
+        this.axios
+          .post("/api/userinfo")
+          .then(successResponse => {
+            this.responseResult = JSON.stringify(successResponse.data);
+            if (successResponse.data.code === 200) {
+              this.email = successResponse.data.data.email;
+              // this.password = successResponse.data.data.password;
+              this.nickname = successResponse.data.data.nickname;
+              this.description = successResponse.data.data.description;
+            } else {
+              this.alert = successResponse.data.message;
+              this.showAlert();
+            }
+          })
+          .then(() => {
+            this.syncPropertites();
+          })
+          .catch(failResponse => {})
+      ;
     },
     updateUserinfo() {
       this.startProgressbar();
-      this.axios
-        .post("/api/updateuser", {
-          email: this.email,
-          nickname: this.nickname,
-          password: "this.password",
-          description: this.description
-        })
-        .then(successResponse => {
-          this.responseResult = JSON.stringify(successResponse.data);
-          if (
-            successResponse.data.code === 200 &&
-            successResponse.data.data == "修改成功"
-          ) {
-            this.switchtoShow();
-          } else {
-            this.alert = successResponse.data.message;
-            this.showAlert();
-            this.stopProgressbar();
-          }
-        })
-        .then(() => {
-          this.loadUserInfo();
-        })
-        .catch(failResponse => {});
+      this.$fetch.checkLogin
+        this.axios
+          .post("/api/updateuser", {
+            email: this.email,
+            nickname: this.nickname,
+            password: "this.password",
+            description: this.description
+          })
+          .then(successResponse => {
+            this.responseResult = JSON.stringify(successResponse.data);
+            if (
+              successResponse.data.code === 200 &&
+              successResponse.data.data == "修改成功"
+            ) {
+              this.switchtoShow();
+            } else {
+              this.alert = successResponse.data.message;
+              this.showAlert();
+              this.stopProgressbar();
+            }
+          })
+          .then(() => {
+            this.loadUserInfo();
+          })
+          .catch(failResponse => {})
+      ;
     },
     switchtoShow() {
       this.showinfo = true;
