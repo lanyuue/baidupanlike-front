@@ -110,7 +110,7 @@ export default {
     },
     updateUserinfo() {
       this.startProgressbar();
-      this.$fetch.checkLogin
+      this.$fetch.checkLogin.call(this);
         this.axios
           .post("/api/updateuser", {
             email: this.email,

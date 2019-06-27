@@ -90,7 +90,7 @@ export default {
         chunkSize: "4096000",
         fileParameterName: "upfile",
         maxChunkRetries: 3,
-        testChunks: false, //是否开启服务器分片校验
+        testChunks: true, //是否开启服务器分片校验
         checkChunkUploadedByResponse: function(chunk, message) {
           if (message == "文件已存在") {
             return true;
@@ -128,12 +128,13 @@ export default {
   methods: {
     onFileAdded(file) {
       Bus.$emit("fileAdded");
+      this.startProgressbar();
       this.panelShow = true;
-
       this.computeMD5(file);
     },
 
     onFileProgress(rootFile, file, chunk) {
+      this.stopProgressbar();
       console.log(
         `上传中 ${file.name}，chunk：${chunk.startByte /
           1024 /
@@ -144,6 +145,8 @@ export default {
     fileComplete() {
       const file = arguments[0].file;
       this.$fetch.checkLogin;
+      this.stopProgressbar();
+
       this.axios
         .post(
           "/api/uploader/mergeFile",
@@ -241,6 +244,13 @@ export default {
         type: "error",
         duration: 2000
       });
+    },
+
+    startProgressbar() {
+      this.$emit("start-progressbar");
+    },
+    stopProgressbar() {
+      this.$emit("stop-progressbar");
     }
   },
   watch: {

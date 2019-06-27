@@ -75,7 +75,7 @@ export default {
   data: () => ({
     search: null,
     websocket: null,
-    progress: null,
+    progress: 0,
     searched: [],
     selected: [],
     selectedIDs: [],
@@ -117,8 +117,8 @@ export default {
     },
     setOnmessageMessage(event) {
       // 根据服务器推送的消息做自己的业务处理
-      console.log("服务端返回：" + event.data);
-      this.progress = event.data;
+      //console.log("服务端返回：" + event.data);
+      this.progress = parseInt(event.data);
     },
     setOncloseMessage() {
       console.log("WebSocket连接关闭    状态码：" + this.websocket.readyState);
@@ -127,11 +127,12 @@ export default {
       this.closeWebSocket();
     },
     closeWebSocket() {
+      this.progress = 0;
       this.websocket.close();
     },
 
     onSelect(items) {
-      console.log(items);
+      // console.log(items);
       let map = items.map(item => item.identifier);
       this.selected = items;
       this.selectedIDs = map;
@@ -165,6 +166,7 @@ export default {
     },
 
     deleteFiles() {
+      this.startProgressbar();
       this.$fetch.checkLogin.call(this);
       this.axios
         .post("/api/files/delete", {
@@ -173,6 +175,7 @@ export default {
         .then(successResponse => {
           if (successResponse.data.code === 200) {
             this.syncFiles();
+            this.stopProgressbar();
           } else {
           }
         });
@@ -199,7 +202,6 @@ export default {
         if (head) {
           try {
             fname = decodeURI(head.split("=")[1]);
-            console.log(fname);
           } catch (err) {
             console.log("can not get file name");
           }
@@ -210,6 +212,12 @@ export default {
         link.click();
       });
       this.onbeforeunload();
+    },
+    startProgressbar() {
+      this.$emit("start-progressbar");
+    },
+    stopProgressbar() {
+      this.$emit("stop-progressbar");
     }
   },
 
@@ -222,6 +230,8 @@ export default {
     });
 
     Bus.$on("startDownload", () => {
+      console.log(this);
+      this.$emit("start-progressbar");
       this.initWebSocket();
       this.$fetch.checkLogin.call(this);
       this.down_clear();
@@ -236,6 +246,16 @@ export default {
   watch: {
     selected: function() {
       this.$emit("changeDownloadStatus", this.selected.length != 0);
+    },
+    progress: function() {
+      Bus.$emit(
+        "changeAmount",
+        this.progress // 传入的参数
+      );
+      //console.log(this.progress);
+      if (this.progress > 0) {
+        this.$emit("stop-progressbar");
+      }
     }
   },
 

@@ -1,11 +1,11 @@
 <template>
   <div
-    style="height:100vh;weight:100vw;background:url('https://www.google.com/drive/static/images/home/intro-768.jpg') 50% 50% / cover;overflow:hidden;"
+    style="height:100vh;weight:100vw;background:url('/static/img/intro-768.jpg') 50% 50% / cover;overflow:hidden;"
   >
     <h1
       style="position:fixed;text-align:left;color:#fff;font-size:30px;font-weight:400;margin:25px;font-style: normal;"
     >
-      <b>L</b> Drive
+      <b>IBM</b> Drive
     </h1>
     <Login class="login"></Login>
   </div>

@@ -1,17 +1,21 @@
 <template>
   <div class="page-container" style="height:100vh;overflow:hidden;">
     <md-app class="md-apps">
-      <md-app-toolbar class="md-primary" md-elevation="0">
+      <md-app-toolbar
+        class="md-primary"
+        md-elevation="0"
+        style="background-color:#fff;border-bottom:solid 1px #e7e7e7"
+      >
         <div class="md-toolbar-section-end">
           <md-button class="md-icon-button" @click="toggleMenu" v-if="!menuVisible">
             <md-avatar class="md-avatar-icon md-accent" style="background-color:#41B883">V</md-avatar>
           </md-button>
-        </div>
+        </div><img src="..\assets\drive_48dp.png">
         <span
           class="md-title"
-          style="position:fixed;text-align:left;color:#fff;font-size:30px;font-weight:400;padding:0;font-style: normal;"
+          style="color:#5f6368;font-size:22px;font-weight:400;margin-top:1px;font-style:normal;vertical-align:middle;line-height:48px"
         >
-          <b>L</b> Drive
+          云端硬盘
         </span>
       </md-app-toolbar>
 
@@ -88,13 +92,27 @@
           md-mode="indeterminate"
           v-show="progressbar"
         ></md-progress-bar>
+
+        <md-progress-bar
+          style="margin:-16px 0 0 -18px;width:100vw;"
+          class="md-accent"
+          md-mode="buffer"
+          :md-value="amount"
+          :md-buffer="buffer"
+          v-show="amount"
+        ></md-progress-bar>
+
         <UserInfo
           @sync-properties="syncProperties"
           @start-progressbar="startProgressbar"
           @stop-progressbar="stopProgressbar"
           v-show="1==components_switch"
         ></UserInfo>
-        <Content v-show="!components_switch"></Content>
+        <Content
+          v-show="!components_switch"
+          @start-progressbar="startProgressbar"
+          @stop-progressbar="stopProgressbar"
+        ></Content>
       </md-app-content>
     </md-app>
   </div>
@@ -103,6 +121,7 @@
 <script>
 import Content from "@/components/Content.vue";
 import UserInfo from "@/components/UserInfo.vue";
+import Bus from "@/components/js/bus.js";
 
 export default {
   name: "MainPage",
@@ -111,7 +130,9 @@ export default {
     components_switch: 0,
     nickname: "昵称",
     email: "邮箱地址",
-    progressbar: false
+    progressbar: false,
+    amount: 0,
+    buffer: 0
   }),
   components: {
     Content,
@@ -140,6 +161,11 @@ export default {
     stopProgressbar() {
       this.progressbar = false;
     }
+  },
+  mounted() {
+    Bus.$on("changeAmount", amount => {
+      this.amount = amount;
+    });
   }
 };
 </script>
@@ -155,11 +181,9 @@ export default {
   min-height: 300px;
   overflow: hidden;
   position: relative;
-  //border: 1px solid rgba(#000, 0.12);
 }
 
 .md-content {
   padding: 16px;
 }
 </style>
-

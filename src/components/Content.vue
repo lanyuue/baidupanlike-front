@@ -2,27 +2,27 @@
   <div class="page-container">
     <md-app>
       <md-app-drawer md-permanent="full" style="height:100vh;overflow:hidden;">
-        <md-toolbar class="md-transparent" md-elevation="0">Navigation</md-toolbar>
+        <md-toolbar class="md-transparent" md-elevation="0">欢迎！</md-toolbar>
 
         <md-list>
           <md-list-item>
             <md-icon>move_to_inbox</md-icon>
-            <span class="md-list-item-text">Inbox</span>
+            <span class="md-list-item-text">全部文件</span>
           </md-list-item>
 
           <md-list-item>
-            <md-icon>send</md-icon>
-            <span class="md-list-item-text">Sent Mail</span>
+            <md-icon>photo</md-icon>
+            <span class="md-list-item-text">图片</span>
           </md-list-item>
 
           <md-list-item>
-            <md-icon>delete</md-icon>
-            <span class="md-list-item-text">Trash</span>
+            <md-icon>description</md-icon>
+            <span class="md-list-item-text">文档</span>
           </md-list-item>
 
           <md-list-item>
-            <md-icon>error</md-icon>
-            <span class="md-list-item-text">Spam</span>
+            <md-icon>movie</md-icon>
+            <span class="md-list-item-text">视频</span>
           </md-list-item>
         </md-list>
       </md-app-drawer>
@@ -36,17 +36,24 @@
           v-show="false"
         ></md-empty-state>
 
-        <FileTable @changeDownloadStatus="changeDownloadStatus"></FileTable>
+        <FileTable
+          @changeDownloadStatus="changeDownloadStatus"
+          @start-progressbar="startProgressbar"
+          @stop-progressbar="stopProgressbar"
+        ></FileTable>
 
         <globalUploader
           style="position:fixed;z-index:0;bottom:73px;right:0px;"
           @changeButton="changeButton"
+          @start-progressbar="startProgressbar"
+          @stop-progressbar="stopProgressbar"
         ></globalUploader>
 
         <md-button
           id="md-button-download"
           class="md-fab md-accent download-button-simple"
           @click="download"
+          @click.stop.prevent="showSnackbar = true"
           v-show="downloadReady"
         >
           <md-icon>vertical_align_bottom</md-icon>
@@ -61,6 +68,10 @@
         </md-button>
       </md-app-content>
     </md-app>
+    <md-snackbar :md-position="position" :md-duration="isInfinity ? Infinity : duration" :md-active.sync="showSnackbar" md-persistent  style="text-align:center;">
+      <span style="text-align:center;">正在准备下载 ...</span>
+      <md-button class="md-primary" @click="showSnackbar = false">好的</md-button>
+    </md-snackbar>
   </div>
 </template>
 
@@ -75,7 +86,11 @@ export default {
   data() {
     return {
       buttonPosition: false,
-      downloadReady: false
+      downloadReady: false,
+      showSnackbar: false,
+    position: 'center',
+    duration: 4000,
+    isInfinity: false,
     };
   },
   components: {
@@ -133,12 +148,11 @@ export default {
       Bus.$emit("openUploader", {
         id: "1111" // 传入的参数
       });
-
-
     },
 
     download() {
-      Bus.$emit("startDownload")
+      Bus.$emit("startDownload");
+      // this.startProgressbar();
     },
 
     changeDownloadStatus(payload) {
@@ -147,7 +161,14 @@ export default {
 
     changeButton(payload) {
       this.buttonPosition = payload;
-    }
+    },
+
+    startProgressbar() {
+      this.$emit("start-progressbar");
+    },
+    stopProgressbar() {
+      this.$emit("stop-progressbar");
+    },
   },
 
   destroyed() {
