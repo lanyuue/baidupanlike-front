@@ -9,7 +9,7 @@
     >
       <md-table-toolbar style="width:300px;">
         <md-field style="margin-top:-10px;" md-clearable class="md-toolbar-section-end">
-          <md-input placeholder="搜索您的文件..." v-model="search" @input="searchOnTable"/>
+          <md-input placeholder="搜索您的文件..." v-model="search" @input="searchOnTable" />
         </md-field>
       </md-table-toolbar>
 
@@ -155,7 +155,7 @@ export default {
       this.axios
         .get("/api/files/pull")
         .then(successResponse => {
-          let response = successResponse.data.data;
+          let response = this.ClearNullArr(successResponse.data.data);
           this.files = response;
           this.searched = response;
         })
@@ -218,6 +218,16 @@ export default {
     },
     stopProgressbar() {
       this.$emit("stop-progressbar");
+    },
+    ClearNullArr(arr) {
+      for (var i = 0, len = arr.length; i < len; i++) {
+        if (arr[i] == null || arr[i] == "" || arr[i] === undefined) {
+          arr.splice(i, 1);
+          // len--;
+          // i--;
+        }
+      }
+      return arr;
     }
   },
 

@@ -87,10 +87,10 @@ export default {
     return {
       options: {
         target: "/api/uploader/chunk",
-        chunkSize: "4096000",
+        chunkSize: "4096",
         fileParameterName: "upfile",
         maxChunkRetries: 3,
-        testChunks: true, //是否开启服务器分片校验
+        testChunks: false, //是否开启服务器分片校验
         checkChunkUploadedByResponse: function(chunk, message) {
           if (message == "文件已存在") {
             return true;
