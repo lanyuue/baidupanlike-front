@@ -87,7 +87,7 @@ export default {
     return {
       options: {
         target: "/api/uploader/chunk",
-        chunkSize: "4096",
+        chunkSize: "4096000",
         fileParameterName: "upfile",
         maxChunkRetries: 3,
         testChunks: false, //是否开启服务器分片校验

@@ -26,7 +26,15 @@
         <div class="md-toolbar-section-start">{{ getAlternateLabel(count) }}</div>
 
         <div class="md-toolbar-section-end">
-          <md-button class="md-icon-button" @click="deleteFiles">
+          <md-dialog-confirm
+            :md-active.sync="active"
+            md-title="您真的确定删除吗？"
+            md-content="注意，这是不可逆操作"
+            md-confirm-text="确定"
+            md-cancel-text="取消"
+            @md-confirm="deleteFiles"
+          />
+          <md-button class="md-icon-button" @click="active = true">
             <md-icon>delete</md-icon>
           </md-button>
         </div>
@@ -79,7 +87,10 @@ export default {
     searched: [],
     selected: [],
     selectedIDs: [],
-    files: []
+    files: [],
+    backup: [],
+    active: false,
+    value: null
   }),
 
   filters: {
@@ -156,8 +167,9 @@ export default {
         .get("/api/files/pull")
         .then(successResponse => {
           let response = this.ClearNullArr(successResponse.data.data);
-          this.files = response;
-          this.searched = response;
+          this.files = this.searched = response;
+          // this.searched = response;
+          this.backup = response;
         })
         .then(() => {
           this.closeA();
@@ -223,8 +235,23 @@ export default {
       for (var i = 0, len = arr.length; i < len; i++) {
         if (arr[i] == null || arr[i] == "" || arr[i] === undefined) {
           arr.splice(i, 1);
-          // len--;
-          // i--;
+          len--;
+          i--;
+        }
+      }
+      return arr;
+    },
+    filterArr(arr, filters) {
+      for (var i = 0, len = arr.length; i < len; i++) {
+        let arrX;
+        arrX = arr[i].filename.split(".")[
+          arr[i].filename.split(".").length - 1
+        ];
+        arrX = arrX.toLowerCase();
+        if (!filters.filter(n => arrX.indexOf(n) > -1).length > 0) {
+          arr.splice(i, 1);
+          len--;
+          i--;
         }
       }
       return arr;
@@ -240,11 +267,16 @@ export default {
     });
 
     Bus.$on("startDownload", () => {
-      console.log(this);
+      //console.log(this);
       this.$emit("start-progressbar");
       this.initWebSocket();
       this.$fetch.checkLogin.call(this);
       this.down_clear();
+    });
+
+    Bus.$on("changeFiles", filters => {
+      this.searched = [].concat(JSON.parse(JSON.stringify(this.backup)));
+      this.searched = this.filterArr(this.searched, filters);
     });
   },
   destroyed() {

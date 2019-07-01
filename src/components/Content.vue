@@ -2,27 +2,55 @@
   <div class="page-container">
     <md-app>
       <md-app-drawer md-permanent="full" style="height:100vh;overflow:hidden;">
-        <md-toolbar class="md-transparent" md-elevation="0">欢迎！</md-toolbar>
+        <md-toolbar class="md-transparent" md-elevation="0">欢迎！{{ nickname }}</md-toolbar>
 
         <md-list>
-          <md-list-item>
-            <md-icon>move_to_inbox</md-icon>
-            <span class="md-list-item-text">全部文件</span>
+          <md-list-item id="file_all" class="leftOnClick leftOffClick">
+            <md-button
+              class="md-icon-button"
+              style="margin-left:0px;top:-4px"
+              @click="show_file_all"
+            >
+              <md-icon>move_to_inbox</md-icon>
+            </md-button>
+            <span
+              id="file_all_text"
+              class="md-list-item-text left_text_after"
+              @click="show_file_all"
+            >全部文件</span>
           </md-list-item>
 
-          <md-list-item>
-            <md-icon>photo</md-icon>
-            <span class="md-list-item-text">图片</span>
+          <md-list-item id="pic_all" class="leftOffClick">
+            <md-button
+              class="md-icon-button"
+              style="margin-left:0px;top:-4px"
+              @click="show_pic_all"
+            >
+              <md-icon>photo</md-icon>
+            </md-button>
+            <span id="pic_all_text" class="md-list-item-text left_text_before">图片</span>
           </md-list-item>
 
-          <md-list-item>
-            <md-icon>description</md-icon>
-            <span class="md-list-item-text">文档</span>
+          <md-list-item id="doc_all" class="leftOffClick">
+            <md-button
+              class="md-icon-button"
+              style="margin-left:0px;top:-4px"
+              @click="show_doc_all"
+            >
+              <md-icon>description</md-icon>
+            </md-button>
+            <span id="doc_all_text" class="md-list-item-text left_text_before">文档</span>
           </md-list-item>
 
-          <md-list-item>
-            <md-icon>movie</md-icon>
-            <span class="md-list-item-text">视频</span>
+          <md-list-item id="vcr_all" class="leftOffClick">
+            <md-button
+              class="md-icon-button"
+              style="margin-left:0px;top:-4px"
+              @click="show_vcr_all"
+            >
+              <md-icon>movie</md-icon>
+            </md-button>
+            <span id="vcr_all_text" class="md-list-item-text left_text_before">视频</span>
           </md-list-item>
         </md-list>
       </md-app-drawer>
@@ -68,7 +96,13 @@
         </md-button>
       </md-app-content>
     </md-app>
-    <md-snackbar :md-position="position" :md-duration="isInfinity ? Infinity : duration" :md-active.sync="showSnackbar" md-persistent  style="text-align:center;">
+    <md-snackbar
+      :md-position="position"
+      :md-duration="isInfinity ? Infinity : duration"
+      :md-active.sync="showSnackbar"
+      md-persistent
+      style="text-align:center;"
+    >
       <span style="text-align:center;">正在准备下载 ...</span>
       <md-button class="md-primary" @click="showSnackbar = false">好的</md-button>
     </md-snackbar>
@@ -88,11 +122,12 @@ export default {
       buttonPosition: false,
       downloadReady: false,
       showSnackbar: false,
-    position: 'center',
-    duration: 4000,
-    isInfinity: false,
+      position: "center",
+      duration: 4000,
+      isInfinity: false
     };
   },
+  props: ["nickname"],
   components: {
     FileTable,
     globalUploader
@@ -169,6 +204,95 @@ export default {
     stopProgressbar() {
       this.$emit("stop-progressbar");
     },
+    show_file_all() {
+      document.getElementById("file_all").setAttribute("class", "leftOnClick");
+      document.getElementById("pic_all").setAttribute("class", "leftOffClick");
+      document.getElementById("doc_all").setAttribute("class", "leftOffClick");
+      document.getElementById("vcr_all").setAttribute("class", "leftOffClick");
+      document
+        .getElementById("file_all_text")
+        .setAttribute("class", "md-list-item-text left_text_after");
+      document
+        .getElementById("pic_all_text")
+        .setAttribute("class", "md-list-item-text left_text_before");
+      document
+        .getElementById("doc_all_text")
+        .setAttribute("class", "md-list-item-text left_text_before");
+      document
+        .getElementById("vcr_all_text")
+        .setAttribute("class", "md-list-item-text left_text_before");
+
+      Bus.$emit("changeFiles", [""]);
+    },
+    show_pic_all() {
+      document.getElementById("file_all").setAttribute("class", "leftOffClick");
+      document.getElementById("pic_all").setAttribute("class", "leftOnClick");
+      document.getElementById("doc_all").setAttribute("class", "leftOffClick");
+      document.getElementById("vcr_all").setAttribute("class", "leftOffClick");
+      document
+        .getElementById("file_all_text")
+        .setAttribute("class", "md-list-item-text left_text_before");
+      document
+        .getElementById("pic_all_text")
+        .setAttribute("class", "md-list-item-text left_text_after");
+      document
+        .getElementById("doc_all_text")
+        .setAttribute("class", "md-list-item-text left_text_before");
+      document
+        .getElementById("vcr_all_text")
+        .setAttribute("class", "md-list-item-text left_text_before");
+      Bus.$emit("changeFiles", ["png", "jpg", "jpeg", "gif", "bmp"]);
+    },
+    show_doc_all() {
+      document.getElementById("file_all").setAttribute("class", "leftOffClick");
+      document.getElementById("pic_all").setAttribute("class", "leftOffClick");
+      document.getElementById("doc_all").setAttribute("class", "leftOnClick");
+      document.getElementById("vcr_all").setAttribute("class", "leftOffClick");
+      document
+        .getElementById("file_all_text")
+        .setAttribute("class", "md-list-item-text left_text_before");
+      document
+        .getElementById("pic_all_text")
+        .setAttribute("class", "md-list-item-text left_text_before");
+      document
+        .getElementById("doc_all_text")
+        .setAttribute("class", "md-list-item-text left_text_after");
+      document
+        .getElementById("vcr_all_text")
+        .setAttribute("class", "md-list-item-text left_text_before");
+
+      Bus.$emit("changeFiles", [
+        "doc",
+        "docx",
+        "xls",
+        "xlsx",
+        "ppt",
+        "pptx",
+        "pdf",
+        "txt",
+        "tif",
+        "tiff"
+      ]);
+    },
+    show_vcr_all() {
+      document.getElementById("file_all").setAttribute("class", "leftOffClick");
+      document.getElementById("pic_all").setAttribute("class", "leftOffClick");
+      document.getElementById("doc_all").setAttribute("class", "leftOffClick");
+      document.getElementById("vcr_all").setAttribute("class", "leftOnClick");
+      document
+        .getElementById("file_all_text")
+        .setAttribute("class", "md-list-item-text left_text_before");
+      document
+        .getElementById("pic_all_text")
+        .setAttribute("class", "md-list-item-text left_text_before");
+      document
+        .getElementById("doc_all_text")
+        .setAttribute("class", "md-list-item-text left_text_before");
+      document
+        .getElementById("vcr_all_text")
+        .setAttribute("class", "md-list-item-text left_text_after");
+      Bus.$emit("changeFiles", ["mp4", "rmvb", "mkv", "wmv", "flv"]);
+    }
   },
 
   destroyed() {
@@ -210,5 +334,37 @@ export default {
   z-index: 1;
   bottom: 380px;
   right: 120px;
+}
+.leftOnClick {
+  background-color: #e8f0fe;
+  width: 220px;
+  height: 40px;
+  border-radius: 0 66px 66px 0;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.leftOffClick {
+  width: 220px;
+  height: 40px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.leftOnClick {
+  background-color: #e8f0fe;
+  width: 220px;
+  height: 40px;
+  border-radius: 0 66px 66px 0;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.left_text_before {
+  margin-left: 9px;
+  margin-top: -7px;
+}
+.left_text_after {
+  margin-left: 9px;
+  margin-top: -7px;
+  font-weight: 600;
+  color: #1967d2;
 }
 </style>

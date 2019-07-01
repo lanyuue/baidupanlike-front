@@ -4,16 +4,29 @@
       <md-card-area>
         <md-card-media>
           <div
-            style="background:url('https://hsinyu00.files.wordpress.com/2011/04/cropped-cropped-glacier9401.jpg') 50% 50% / cover;height:250px;"
+            style="background:url('/static/img/bg.jpg') 50% 50% / cover;height:250px;position:relative;z-index=-2"
           ></div>
         </md-card-media>
 
-        <md-avatar
-          class="md-avatar-icon md-large"
-          style="top:-75px;width:150px;height:150px; border-radius:75px"
-        >
-          <img src="https://vuematerial.io/assets/examples/avatar-2.jpg" alt="Avatar">
-        </md-avatar>
+        <div class="hello">
+          <div class="user-header">
+            <input
+              type="file"
+              name="image"
+              accept="image/*"
+              @change="onchangeImgFun"
+              class="header-upload-btn user-header-com"
+              style="margin-top:-75px;margin-bottom:75px;width:150px;height:150px; border-radius:75px;cursor:pointer;"
+            />
+            <img
+              alt
+              :src="imgStr"
+              class="user-header-img user-header-com"
+              style="margin-top:-75px;margin-bottom:75px;width:150px;height:150px; border-radius:75px;cursor:pointer;"
+            />
+          </div>
+        </div>
+
         <div v-show="showinfo">
           <md-card-header style="margin-top:-80px">
             <div class="md-title">{{ nickname }}</div>
@@ -74,7 +87,9 @@ export default {
       showinfo: true,
       editinfo: false,
       alert: null,
-      showalert: false
+      showalert: false,
+      imgStr: require("../assets/logo.png"),
+      errorStr: ""
     };
   },
   mounted: function() {
@@ -82,60 +97,105 @@ export default {
     this.loadUserInfo();
   },
   methods: {
+    onchangeImgFun(e) {
+      var file = e.target.files[0];
+      console.log(file);
+      // 获取图片的大小，做大小限制有用
+      let imgSize = file.size;
+      console.log(imgSize);
+      var _this = this; // this指向问题，所以在外面先定义
+      // 比如上传头像限制5M大小，这里获取的大小单位是b
+      if (imgSize <= 500 * 1024) {
+        // 合格
+        _this.errorStr = "";
+        console.log("大小合适");
+        var dataURL = window.URL.createObjectURL(file);
+        console.log(dataURL);
+        _this.imgStr = dataURL;
+        let param = new FormData(); // 创建form对象
+        param.append("file", file); // 通过append向form对象添加数据
+        console.log(param.get("file")); // FormData私有类对象，访问不到，可以通过get判断值是否传进去
+        let config = {
+          headers: { "Content-Type": "multipart/form-data" }
+        };
+        // 添加请求头
+        this.axios.post("/api/files/avatar", param, config).then(response => {
+          if (response.data.code === 0) {
+            self.ImgUrl = response.data.data;
+          }
+          console.log(response.data);
+        }).then(()=>{
+          this.updateAvatar()
+        });
+      } else {
+        console.log("大小不合适");
+        _this.errorStr = "图片大小超出范围";
+      }
+    },
+
     syncPropertites() {
       this.$fetch.checkLogin.call(this);
-      this.$emit("sync-properties", this.email, this.nickname);
+      this.updateAvatar();
     },
     loadUserInfo() {
-      
-        this.axios
-          .post("/api/userinfo")
-          .then(successResponse => {
-            this.responseResult = JSON.stringify(successResponse.data);
-            if (successResponse.data.code === 200) {
-              this.email = successResponse.data.data.email;
-              // this.password = successResponse.data.data.password;
-              this.nickname = successResponse.data.data.nickname;
-              this.description = successResponse.data.data.description;
-            } else {
-              this.alert = successResponse.data.message;
-              this.showAlert();
-            }
-          })
-          .then(() => {
-            this.syncPropertites();
-          })
-          .catch(failResponse => {})
-      ;
+      this.axios
+        .post("/api/userinfo")
+        .then(successResponse => {
+          this.responseResult = JSON.stringify(successResponse.data);
+          if (successResponse.data.code === 200) {
+            this.email = successResponse.data.data.email;
+            // this.password = successResponse.data.data.password;
+            this.nickname = successResponse.data.data.nickname;
+            this.description = successResponse.data.data.description;
+          } else {
+            this.alert = successResponse.data.message;
+            this.showAlert();
+          }
+        })
+        .then(() => {
+          this.syncPropertites();
+        })
+        .catch(failResponse => {});
     },
     updateUserinfo() {
       this.startProgressbar();
       this.$fetch.checkLogin.call(this);
-        this.axios
-          .post("/api/updateuser", {
-            email: this.email,
-            nickname: this.nickname,
-            password: "this.password",
-            description: this.description
-          })
-          .then(successResponse => {
-            this.responseResult = JSON.stringify(successResponse.data);
-            if (
-              successResponse.data.code === 200 &&
-              successResponse.data.data == "修改成功"
-            ) {
-              this.switchtoShow();
-            } else {
-              this.alert = successResponse.data.message;
-              this.showAlert();
-              this.stopProgressbar();
-            }
-          })
-          .then(() => {
-            this.loadUserInfo();
-          })
-          .catch(failResponse => {})
-      ;
+      this.axios
+        .post("/api/updateuser", {
+          email: this.email,
+          nickname: this.nickname,
+          password: "this.password",
+          description: this.description
+        })
+        .then(successResponse => {
+          this.responseResult = JSON.stringify(successResponse.data);
+          if (
+            successResponse.data.code === 200 &&
+            successResponse.data.data == "修改成功"
+          ) {
+            this.switchtoShow();
+          } else {
+            this.alert = successResponse.data.message;
+            this.showAlert();
+            this.stopProgressbar();
+          }
+        })
+        .then(() => {
+          this.loadUserInfo();
+        })
+        .catch(failResponse => {});
+    },
+    updateAvatar() {
+      this.axios
+        .post("/api/files/getavatar")
+        .then(successResponse => {
+          console.log(successResponse);
+          this.imgStr = "data:image/jpeg;base64," + successResponse.data.data;
+        })
+        .then(() => {
+          this.$emit("sync-properties", this.email, this.nickname, this.imgStr);
+        })
+        .catch(failResponse => {});
     },
     switchtoShow() {
       this.showinfo = true;
@@ -207,5 +267,31 @@ export default {
       border-radius: 2px;
     }
   }
+}
+.user-header {
+  position: relative;
+  display: inline-block;
+}
+.user-header-com {
+  width: 144px;
+  height: 144px;
+  display: inline-block;
+}
+.header-upload-btn {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  /* 通过定位把input放在img标签上面，通过不透明度隐藏 */
+}
+.tip {
+  font-size: 14px;
+  color: #666;
+}
+/* error是用于错误提示 */
+.error {
+  font-size: 12px;
+  color: tomato;
+  margin-left: 10px;
 }
 </style>

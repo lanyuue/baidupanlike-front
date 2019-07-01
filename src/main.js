@@ -8,19 +8,19 @@ import VueAxios from 'vue-axios'
 import VueMaterial from 'vue-material'
 import uploader from 'vue-simple-uploader'
 import Fetch from "@/components/js/fetch.js"
-
+import VueCropper from 'vue-cropperjs'
 
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
+import 'cropperjs/dist/cropper.css';
 
+Vue.component(VueCropper);
 Vue.config.productionTip = false
 axios.defaults.withCredentials = true
 Vue.use(VueMaterial)
 Vue.use(VueAxios, axios)
 Vue.use(uploader)
 Vue.prototype.$fetch = new Fetch()
-
-
 
 /* eslint-disable no-new */
 const vueP = new Vue({

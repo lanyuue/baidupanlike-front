@@ -8,15 +8,16 @@
       >
         <div class="md-toolbar-section-end">
           <md-button class="md-icon-button" @click="toggleMenu" v-if="!menuVisible">
-            <md-avatar class="md-avatar-icon md-accent" style="background-color:#41B883">V</md-avatar>
+            <md-avatar>
+              <img alt :src="imgStr" />
+            </md-avatar>
           </md-button>
-        </div><img src="..\assets\drive_48dp.png">
+        </div>
+        <img src="..\assets\drive_48dp.png" />
         <span
           class="md-title"
           style="color:#5f6368;font-size:22px;font-weight:400;margin-top:1px;font-style:normal;vertical-align:middle;line-height:48px"
-        >
-          云端硬盘
-        </span>
+        >云端硬盘</span>
       </md-app-toolbar>
 
       <md-app-drawer
@@ -27,13 +28,12 @@
         style="height:100vh;overflow:hidden;"
       >
         <md-toolbar class="md-transparent" md-elevation="0" style="padding:0;margin:5px 0 0 0;">
-          <md-avatar
-            class="md-avatar-icon md-accent"
-            style="background-color:#41B883;margin-left:10px"
-          >V</md-avatar>
+          <md-avatar style="margin-left:10px">
+            <img alt :src="imgStr" />
+          </md-avatar>
           <div style="font-family:'Roboto';margin-left:12px;text-align:left;">
             <b>{{ nickname }}</b>
-            <br>
+            <br />
             <div style="color:#666">{{ email }}</div>
           </div>
 
@@ -109,9 +109,11 @@
           v-show="1==components_switch"
         ></UserInfo>
         <Content
+          style="margin-left:-20px"
           v-show="!components_switch"
           @start-progressbar="startProgressbar"
           @stop-progressbar="stopProgressbar"
+          :nickname="this.nickname"
         ></Content>
       </md-app-content>
     </md-app>
@@ -130,6 +132,7 @@ export default {
     components_switch: 0,
     nickname: "昵称",
     email: "邮箱地址",
+    imgStr: null,
     progressbar: false,
     amount: 0,
     buffer: 0
@@ -151,9 +154,10 @@ export default {
     show_person_info() {
       this.components_switch = 1;
     },
-    syncProperties(email, nickname) {
+    syncProperties(email, nickname, imgStr) {
       this.email = email;
       this.nickname = nickname;
+      this.imgStr = imgStr;
     },
     startProgressbar() {
       this.progressbar = true;
