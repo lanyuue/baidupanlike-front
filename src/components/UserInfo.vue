@@ -119,17 +119,30 @@ export default {
           headers: { "Content-Type": "multipart/form-data" }
         };
         // 添加请求头
-        this.axios.post("/api/files/avatar", param, config).then(response => {
-          if (response.data.code === 0) {
-            self.ImgUrl = response.data.data;
+        this.axios.post("/api/files/avatar", param, config).then(successResponse => {
+          _this.hideAlert();
+          if (
+            successResponse.data.code === 200 &&
+            successResponse.data.data == "上传成功"
+          ) {
+            self.ImgUrl = successResponse.data.data;
+            _this.imgStr = "data:image/jpeg;base64," + successResponse.data.data;
+          } else {
+            _this.alert = successResponse.data.message;
+            _this.showAlert();
           }
-          console.log(response.data);
+          
+          // if (response.data.code === 0) {
+          //   self.ImgUrl = response.data.data;
+          // }
+          // console.log(response.data);
         }).then(()=>{
           this.updateAvatar()
         });
       } else {
         console.log("大小不合适");
-        _this.errorStr = "图片大小超出范围";
+        _this.alert = "图片大小超出范围";
+        _this.showAlert();
       }
     },
 

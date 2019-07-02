@@ -64,7 +64,7 @@
           </md-list-item>
 
           <md-list-item>
-            <md-button class="md-icon-button" style="margin-left:-7px">
+            <md-button class="md-icon-button" style="margin-left:-7px" @click="show_friends_info">
               <md-icon>people</md-icon>
             </md-button>
             <span class="md-list-item-text" style="margin-left:17px">人脉</span>
@@ -108,6 +108,7 @@
           @stop-progressbar="stopProgressbar"
           v-show="1==components_switch"
         ></UserInfo>
+
         <Content
           style="margin-left:-20px"
           v-show="!components_switch"
@@ -115,6 +116,12 @@
           @stop-progressbar="stopProgressbar"
           :nickname="this.nickname"
         ></Content>
+
+        <Friends
+          @start-progressbar="startProgressbar"
+          @stop-progressbar="stopProgressbar"
+          v-show="2==components_switch"
+        ></Friends>
       </md-app-content>
     </md-app>
   </div>
@@ -123,6 +130,7 @@
 <script>
 import Content from "@/components/Content.vue";
 import UserInfo from "@/components/UserInfo.vue";
+import Friends from "@/components/Friends.vue";
 import Bus from "@/components/js/bus.js";
 
 export default {
@@ -139,7 +147,8 @@ export default {
   }),
   components: {
     Content,
-    UserInfo
+    UserInfo,
+    Friends
   },
   methods: {
     toggleMenu() {
@@ -153,6 +162,9 @@ export default {
     },
     show_person_info() {
       this.components_switch = 1;
+    },
+    show_friends_info() {
+      this.components_switch = 2;
     },
     syncProperties(email, nickname, imgStr) {
       this.email = email;
