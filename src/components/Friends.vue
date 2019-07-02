@@ -1,102 +1,71 @@
 <template>
   <div style="height:100vh">
     <md-tabs class="md-tabs" style>
-      <md-tab id="tab-home" md-label="消息"></md-tab>
-      <md-tab id="tab-pages" md-label="联系人"></md-tab>
-      <md-tab id="tab-posts" md-label="共享文件"></md-tab>
+      <md-tab id="tab-home" md-label="联系人" @click="contactmode"></md-tab>
+      <md-tab id="tab-pages" md-label="搜索" @click="searchmode"></md-tab>
+      <!-- <md-tab id="tab-posts" md-label="共享文件"></md-tab> -->
     </md-tabs>
 
-    
-
-    <md-list class="md-double-line">
-        <Userlist
-      v-for="user in users"
-      :key="user.id"
-      :nickname="user.nickname"
-      :email="user.email"
-      :description="user.description"
-    ></Userlist>
-      <!-- <md-list-item>
-        <md-avatar>
-          <img src="https://placeimg.com/40/40/people/1" alt="People" />
-        </md-avatar>
-
-        <div class="md-list-item-text">
-          <span>Ali Connors</span>
-          <span>Brunch this weekend?</span>
-          <p>I'll be in your neighborhood doing errands this week. Do you want to meet?</p>
-        </div>
-
-        <md-button class="md-icon-button md-list-action">
-          <md-icon class="md-primary">star</md-icon>
-        </md-button>
-      </md-list-item>
-
-      <md-divider class="md-inset"></md-divider>
-
-      <md-list-item>
-        <md-avatar>
-          <img src="https://placeimg.com/40/40/people/6" alt="People" />
-        </md-avatar>
-
-        <div class="md-list-item-text">
-          <span>me, Scott, Jennifer</span>
-          <span>Summer BBQ</span>
-          <p>Wish I could come, but I'm out of town this week. :(</p>
-        </div>
-
-        <md-button class="md-icon-button md-list-action">
-          <md-icon>star_border</md-icon>
-        </md-button>
-      </md-list-item>
-
-      <md-divider class="md-inset"></md-divider>
-
-      <md-list-item>
-        <md-avatar>
-          <img src="https://placeimg.com/40/40/people/5" alt="People" />
-        </md-avatar>
-
-        <div class="md-list-item-text">
-          <span>Sandra Adams</span>
-          <span>Oui oui</span>
-          <p>Do you have Paris recommendations? Have you visited good places?</p>
-        </div>
-
-        <md-button class="md-icon-button md-list-action">
-          <md-icon>star_border</md-icon>
-        </md-button>
-      </md-list-item>
-
-      <md-divider class="md-inset"></md-divider>
-
-      <md-list-item>
-        <md-avatar>
-          <img src="https://placeimg.com/40/40/people/8" alt="People" />
-        </md-avatar>
-
-        <div class="md-list-item-text">
-          <span>Trevor Hansen</span>
-          <span>Order confirmation</span>
-          <p>Thank you for your recent order from Amazon</p>
-        </div>
-
-        <md-button class="md-icon-button md-list-action">
-          <md-icon>star_border</md-icon>
-        </md-button>
-      </md-list-item> -->
-
+    <md-list class="md-double-line" v-show="2==switcher">
+      <Userlist
+        v-for="user in users"
+        :key="user.id"
+        :nickname="user.nickname"
+        :email="user.email"
+        :avatar="user.avatar"
+        @showUserInfo="showUserInfo"
+      ></Userlist>
       <md-field md-clearable class="md-toolbar-section-end" style="width:230px">
         <md-input placeholder="搜索用户 ..." v-model="search" @input="searchUsers" />
       </md-field>
     </md-list>
-    <md-card class="md-elevation-0">
+
+    <md-card id="user_info" v-show="showinfo">
+      <md-card-media-actions style="height:260px">
+        <md-card-media>
+          <img :src="img" alt="Cover" />
+        </md-card-media>
+
+        <md-card-actions>
+          <md-button class="md-icon-button">
+            <md-icon>star</md-icon>
+          </md-button>
+
+          <md-button class="md-icon-button">
+            <md-icon>bookmark</md-icon>
+          </md-button>
+
+          <md-button class="md-icon-button">
+            <md-icon>share</md-icon>
+          </md-button>
+        </md-card-actions>
+      </md-card-media-actions>
+      <br />
+      <md-card-header-text>
+        <div class="md-title">{{ nickname }}</div>
+        <div class="md-subhead">{{ email }}</div>
+      </md-card-header-text>
+      <md-card-content>{{ description }}</md-card-content>
+
+      <md-dialog-alert :md-active.sync="add_contact" md-title="好友申请已提交！" md-content="静候对方同意吧" />
+
+      <md-button
+        class="md-fab md-primary"
+        style="right:20px;bottom:20px;position:absolute"
+        @click="addContact"
+   
+      >
+        <md-icon>person_add</md-icon>
+      </md-button>
+    </md-card>
+
+    <!-- <md-card class="md-elevation-0">
       <md-card-header>
         <div class="md-title"></div>
       </md-card-header>
 
       <md-card-content></md-card-content>
-    </md-card>
+    </md-card>-->
   </div>
 </template>
 
@@ -108,7 +77,14 @@ export default {
   data: () => ({
     search: null,
     nickname: null,
-    users: []
+    users: [],
+    showinfo: false,
+    img: null,
+    nickname: null,
+    email: null,
+    description: null,
+    switcher: 2,
+    add_contact: false
   }),
   components: {
     Userlist
@@ -116,6 +92,7 @@ export default {
   methods: {
     null() {},
     searchUsers() {
+      this.showinfo = false;
       this.axios
         .post("/api/searchuser", {
           nickname: this.search
@@ -127,17 +104,62 @@ export default {
           } else {
           }
         });
+    },
+    showUserInfo(email) {
+      this.axios
+        .post("/api/searchone", {
+          email: email
+        })
+        .then(successResponse => {
+          if (successResponse.data.code === 200) {
+            console.log(successResponse.data.data);
+            this.nickname = successResponse.data.data.nickname;
+            this.email = successResponse.data.data.email;
+            this.description = successResponse.data.data.description;
+            this.img = successResponse.data.data.avatar;
+            this.showinfo = true;
+          } else {
+          }
+        });
+    },
+    sendNofitication() {
+        this.axios.post("/api/push/send", {
+            userB: this.email,
+            category: "friendinvite"
+        })
+    },
+    contactmode() {
+      this.switcher = 1;
+      this.showinfo = false;
+    },
+    searchmode() {
+      this.switcher = 2;
+      this.showinfo = false;
+    },
+    addContact() {
+        this.sendNofitication();
+        this.add_contact = true;
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.md-card {
-  width: 72vw;
-  height: 100vh;
-  margin-left: 290px;
-  margin-top: -49px;
+// .md-card {
+//   width: 72vw;
+//   height: 100vh;
+//   margin-left: 290px;
+//   margin-top: -49px;
+//   //   display: inline-block;
+//   vertical-align: top;
+//   position: absolute;
+// }
+
+#user_info {
+  width: 320px;
+  height: 500px;
+  margin-left: 300px;
+  margin-top: 0px;
   //   display: inline-block;
   vertical-align: top;
   position: absolute;

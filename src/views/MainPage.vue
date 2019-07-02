@@ -71,7 +71,11 @@
           </md-list-item>
 
           <md-list-item>
-            <md-button class="md-icon-button" style="margin-left:-7px">
+            <md-button
+              class="md-icon-button"
+              style="margin-left:-7px"
+              @click="show_notifications_info"
+            >
               <md-icon>notifications</md-icon>
             </md-button>
             <span class="md-list-item-text" style="margin-left:17px">通知</span>
@@ -122,6 +126,12 @@
           @stop-progressbar="stopProgressbar"
           v-show="2==components_switch"
         ></Friends>
+
+        <Notifications
+          @start-progressbar="startProgressbar"
+          @stop-progressbar="stopProgressbar"
+          v-show="3==components_switch"
+        ></Notifications>
       </md-app-content>
     </md-app>
   </div>
@@ -131,6 +141,7 @@
 import Content from "@/components/Content.vue";
 import UserInfo from "@/components/UserInfo.vue";
 import Friends from "@/components/Friends.vue";
+import Notifications from "@/components/Notifications.vue";
 import Bus from "@/components/js/bus.js";
 
 export default {
@@ -148,7 +159,8 @@ export default {
   components: {
     Content,
     UserInfo,
-    Friends
+    Friends,
+    Notifications
   },
   methods: {
     toggleMenu() {
@@ -165,6 +177,9 @@ export default {
     },
     show_friends_info() {
       this.components_switch = 2;
+    },
+    show_notifications_info() {
+      this.components_switch = 3;
     },
     syncProperties(email, nickname, imgStr) {
       this.email = email;
