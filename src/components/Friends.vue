@@ -11,7 +11,7 @@
         v-for="friend in friends"
         :key="friend.id"
         :nickname="friend.nickname"
-        :email="user.email"
+        :email="friend.email"
         :description="friend.description"
         :avatar="friend.avatar"
         @showChatWindow="showChatWindow"
@@ -69,8 +69,15 @@
         <md-icon>person_add</md-icon>
       </md-button>
     </md-card>
-    <ChatWindow style="width:18vw;margin-right:50px;height:100vh;float:right"></ChatWindow>
-    <ChatWindow style="width:18vw;margin-right:50px;height:100vh;float:right"></ChatWindow>
+
+    <ChatWindow
+      v-for="chatuser in chatusers"
+      :key="chatuser.id"
+      :nickname="chatuser.nickname"
+      style="width:18vw;margin-right:50px;height:100vh;float:right"
+    ></ChatWindow>
+    <!-- <ChatWindow style="width:18vw;margin-right:50px;height:100vh;float:right"></ChatWindow>
+    <ChatWindow style="width:18vw;margin-right:50px;height:100vh;float:right"></ChatWindow> -->
 
     <!-- <ChatWindow style="width:20vw;margin-right:50px;height:80vh;max-height:80vh;float:right"></ChatWindow> -->
   </div>
@@ -88,6 +95,8 @@ export default {
     nickname: null,
     users: [],
     friends: [],
+    chat_user: [],
+    chatusers: [],
     showinfo: false,
     img: null,
     nickname: null,
@@ -130,6 +139,22 @@ export default {
             this.description = successResponse.data.data.description;
             this.img = successResponse.data.data.avatar;
             this.showinfo = true;
+          } else {
+          }
+        });
+    },
+    showChatWindow(email) {
+      this.axios
+        .post("/api/searchone", {
+          email: email
+        })
+        .then(successResponse => {
+          if (successResponse.data.code === 200) {
+            console.log(successResponse.data.data);
+            this.chat_user = successResponse.data.data;
+            this.chatusers.push(this.chat_user);
+            console.log(this.chatusers);
+            console.log(this.users);
           } else {
           }
         });

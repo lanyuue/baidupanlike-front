@@ -1,7 +1,7 @@
 <template>
   <div>
     <md-toolbar style="text-align:left;background-color:#404040;" md-elevation="0">
-      <h3 class="md-title" style="flex: 1;color:#fff">aldosd</h3>
+      <h3 class="md-title" style="flex: 1;color:#fff">{{ nickname }}</h3>
       <md-button class="md-icon-button">
         <md-icon style="color:#fff">more_vert</md-icon>
       </md-button>
@@ -165,6 +165,7 @@ export default {
       }
     ]
   }),
+  props: ["nickname"],
 
   filters: {
     calcSize: bytes => {
