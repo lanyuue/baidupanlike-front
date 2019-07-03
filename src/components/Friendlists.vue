@@ -1,7 +1,7 @@
 <template>
   <!-- <md-list class="md-double-line"> -->
   <div id="body" style="border:1px solid rgba(#000, 0.12)">
-    <md-list-item @click="showinfo">
+    <md-list-item @click="showChatWindow">
       <md-avatar>
         <img :src="avatar" alt="People" />
       </md-avatar>
@@ -25,11 +25,11 @@ export default {
   data: () => ({
     friends: []
   }),
-  props: ["nickname", "avatar", "description"],
+  props: ["nickname", "avatar", "description", "email"],
   methods: {
-    showinfo() {
-      //   console.log(this.email);
-      //   this.$emit("showUserInfo", this.email);
+    showChatWindow() {
+        // console.log(this.email);
+        this.$emit("showChatWindow", this.email);
     }
   }
 };

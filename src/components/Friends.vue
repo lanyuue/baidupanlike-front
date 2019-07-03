@@ -11,9 +11,10 @@
         v-for="friend in friends"
         :key="friend.id"
         :nickname="friend.nickname"
+        :email="user.email"
         :description="friend.description"
         :avatar="friend.avatar"
-        @showUserInfo="showUserInfo"
+        @showChatWindow="showChatWindow"
       ></Friendlist>
     </md-list>
 
@@ -68,20 +69,17 @@
         <md-icon>person_add</md-icon>
       </md-button>
     </md-card>
+    <ChatWindow style="width:18vw;margin-right:50px;height:100vh;float:right"></ChatWindow>
+    <ChatWindow style="width:18vw;margin-right:50px;height:100vh;float:right"></ChatWindow>
 
-    <!-- <md-card class="md-elevation-0">
-      <md-card-header>
-        <div class="md-title"></div>
-      </md-card-header>
-
-      <md-card-content></md-card-content>
-    </md-card>-->
+    <!-- <ChatWindow style="width:20vw;margin-right:50px;height:80vh;max-height:80vh;float:right"></ChatWindow> -->
   </div>
 </template>
 
 <script>
 import Userlist from "@/components/Userlists.vue";
 import Friendlist from "@/components/Friendlists.vue";
+import ChatWindow from "@/components/ChatWindow.vue";
 
 export default {
   name: "Friends",
@@ -100,7 +98,8 @@ export default {
   }),
   components: {
     Userlist,
-    Friendlist
+    Friendlist,
+    ChatWindow
   },
   methods: {
     null() {},
@@ -191,5 +190,19 @@ export default {
   margin-top: -10px;
   width: 246px;
   border-right: 1px solid rgba(#000, 0.12);
+}
+
+#window {
+  // float: right;
+  // width: 400px;
+  // top: 90px;
+  width: 80%;
+  // height: 70vw;
+  // vertical-align: top;
+  // right:100px;
+  // background-color: #888;
+  left: 300px;
+  max-height: 1000px;
+  position: absolute;
 }
 </style>
