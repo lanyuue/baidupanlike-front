@@ -47,7 +47,7 @@
       </md-card-header-text>
       <md-card-content>{{ description }}</md-card-content>
 
-      <md-dialog-alert :md-active.sync="add_contact" md-title="好友申请已提交！" md-content="静候对方同意吧" />
+      <md-dialog-alert :md-active.sync="add_contact" md-title="好友申请已提交！" md-content="静候TA同意吧" />
 
       <md-button
         class="md-fab md-primary"
