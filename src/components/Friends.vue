@@ -74,10 +74,11 @@
       v-for="chatuser in chatusers"
       :key="chatuser.id"
       :nickname="chatuser.nickname"
-      style="width:18vw;margin-right:50px;height:100vh;float:right"
+      :avatar="chatuser.avatar"
+      style="width:15vw;margin-right:40px;height:100vh;float:right;"
     ></ChatWindow>
     <!-- <ChatWindow style="width:18vw;margin-right:50px;height:100vh;float:right"></ChatWindow>
-    <ChatWindow style="width:18vw;margin-right:50px;height:100vh;float:right"></ChatWindow> -->
+    <ChatWindow style="width:18vw;margin-right:50px;height:100vh;float:right"></ChatWindow>-->
 
     <!-- <ChatWindow style="width:20vw;margin-right:50px;height:80vh;max-height:80vh;float:right"></ChatWindow> -->
   </div>

@@ -1,6 +1,9 @@
 <template>
   <div>
-    <md-toolbar style="text-align:left;background-color:#404040;" md-elevation="0">
+    <md-toolbar style="text-align:left;background-color:#448aff;margin-top:100px" md-elevation="3">
+      <md-avatar>
+        <img :src="avatar" alt="People" />
+      </md-avatar>
       <h3 class="md-title" style="flex: 1;color:#fff">{{ nickname }}</h3>
       <md-button class="md-icon-button">
         <md-icon style="color:#fff">more_vert</md-icon>
@@ -10,8 +13,8 @@
       </md-button>
     </md-toolbar>
     <md-card
-      style="margin:0;height:70vh;border-left:1px solid #e7e7e7;border-right:1px solid #e7e7e7;margin-top:-1px"
-      class="md-elevation-0"
+      style="margin:0;height:60vh;border-left:1px solid #e7e7e7;border-right:1px solid #e7e7e7;margin-top:-1px"
+      class="md-elevation-3"
     >
       <md-card-header>
         <md-card-header-text>
@@ -23,7 +26,7 @@
     <md-toolbar
       class="md-dense"
       style="text-align:left;border:1px solid #e7e7e7;margin-top:-1px"
-      md-elevation="0"
+      md-elevation="3"
     >
       <md-field>
         <md-input v-model="message"></md-input>
@@ -165,7 +168,7 @@ export default {
       }
     ]
   }),
-  props: ["nickname"],
+  props: ["nickname", "avatar"],
 
   filters: {
     calcSize: bytes => {
