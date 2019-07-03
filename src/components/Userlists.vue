@@ -11,7 +11,7 @@
     </div>
 
     <md-button class="md-icon-button md-list-action">
-      <md-icon class="md-primary">star_border</md-icon>
+      <md-icon>person_add</md-icon>
     </md-button>
   </md-list-item>
   <!-- </md-list> -->

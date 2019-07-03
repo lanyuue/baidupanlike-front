@@ -79,6 +79,7 @@
               <md-icon>notifications</md-icon>
             </md-button>
             <span class="md-list-item-text" style="margin-left:17px">通知</span>
+            <md-badge md-content="1" md-dense md-position="bottom"></md-badge>
           </md-list-item>
 
           <md-list-item>

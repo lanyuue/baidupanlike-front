@@ -32,7 +32,13 @@ export default {
         this.$emit("getNotifications");
       });
     },
-    acceptRequest() {}
+    acceptRequest() {
+      this.axios.post("/api/relation/create/" + this.id).then(() => {
+        this.axios.get("/api/push/checked/" + this.id).then(() => {
+          this.$emit("getNotifications");
+        });
+      });
+    }
   }
 };
 </script>

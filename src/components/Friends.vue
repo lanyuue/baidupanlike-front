@@ -6,6 +6,17 @@
       <!-- <md-tab id="tab-posts" md-label="共享文件"></md-tab> -->
     </md-tabs>
 
+    <md-list class="md-double-line" v-show="1==switcher">
+      <Friendlist
+        v-for="friend in friends"
+        :key="friend.id"
+        :nickname="friend.nickname"
+        :description="friend.description"
+        :avatar="friend.avatar"
+        @showUserInfo="showUserInfo"
+      ></Friendlist>
+    </md-list>
+
     <md-list class="md-double-line" v-show="2==switcher">
       <Userlist
         v-for="user in users"
@@ -15,7 +26,7 @@
         :avatar="user.avatar"
         @showUserInfo="showUserInfo"
       ></Userlist>
-      <md-field md-clearable class="md-toolbar-section-end" style="width:230px">
+      <md-field md-clearable class="md-toolbar-section-end" style="margin-left:20px;width:230px">
         <md-input placeholder="搜索用户 ..." v-model="search" @input="searchUsers" />
       </md-field>
     </md-list>
@@ -53,7 +64,6 @@
         class="md-fab md-primary"
         style="right:20px;bottom:20px;position:absolute"
         @click="addContact"
-   
       >
         <md-icon>person_add</md-icon>
       </md-button>
@@ -71,6 +81,7 @@
 
 <script>
 import Userlist from "@/components/Userlists.vue";
+import Friendlist from "@/components/Friendlists.vue";
 
 export default {
   name: "Friends",
@@ -78,16 +89,18 @@ export default {
     search: null,
     nickname: null,
     users: [],
+    friends: [],
     showinfo: false,
     img: null,
     nickname: null,
     email: null,
     description: null,
-    switcher: 2,
+    switcher: 1,
     add_contact: false
   }),
   components: {
-    Userlist
+    Userlist,
+    Friendlist
   },
   methods: {
     null() {},
@@ -123,10 +136,10 @@ export default {
         });
     },
     sendNofitication() {
-        this.axios.post("/api/push/send", {
-            userB: this.email,
-            category: "friendinvite"
-        })
+      this.axios.post("/api/push/send", {
+        userB: this.email,
+        category: "friendinvite"
+      });
     },
     contactmode() {
       this.switcher = 1;
@@ -137,24 +150,22 @@ export default {
       this.showinfo = false;
     },
     addContact() {
-        this.sendNofitication();
-        this.add_contact = true;
+      this.sendNofitication();
+      this.add_contact = true;
+    },
+    getFriends() {
+      this.axios.get("/api/relation/friends").then(response => {
+        this.friends = response.data.data;
+      });
     }
+  },
+  mounted() {
+    this.getFriends();
   }
 };
 </script>
 
 <style lang="scss" scoped>
-// .md-card {
-//   width: 72vw;
-//   height: 100vh;
-//   margin-left: 290px;
-//   margin-top: -49px;
-//   //   display: inline-block;
-//   vertical-align: top;
-//   position: absolute;
-// }
-
 #user_info {
   width: 320px;
   height: 500px;
@@ -166,7 +177,7 @@ export default {
 }
 
 .md-list {
-  margin-left: 22px;
+  margin-left: 0px;
   float: left;
   width: 263px;
   height: 100vh;
@@ -176,9 +187,9 @@ export default {
 }
 
 .md-tabs {
-  margin-left: 22px;
+  margin-left: 17px;
   margin-top: -10px;
-  width: 263px;
+  width: 246px;
   border-right: 1px solid rgba(#000, 0.12);
 }
 </style>
