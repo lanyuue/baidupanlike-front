@@ -120,12 +120,14 @@
           @start-progressbar="startProgressbar"
           @stop-progressbar="stopProgressbar"
           :nickname="this.nickname"
+          :email="this.email"
         ></Content>
 
         <Friends
           @start-progressbar="startProgressbar"
           @stop-progressbar="stopProgressbar"
           v-show="2==components_switch"
+          :usernickname="this.nickname"
         ></Friends>
 
         <Notifications

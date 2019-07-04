@@ -5,21 +5,44 @@
         <img :src="avatar" alt="People" />
       </md-avatar>
       <h3 class="md-title" style="flex: 1;color:#fff">{{ nickname }}</h3>
-      <md-button class="md-icon-button">
+      <md-menu md-size="auto" md-direction="bottom-end" md-offset-y="12" md-offset-x="12">
+        <md-button class="md-icon-button" md-menu-trigger>
+          <md-icon style="color:#fff">more_vert</md-icon>
+        </md-button>
+
+        <md-menu-content>
+          <md-menu-item>
+            <md-dialog-confirm
+            :md-active.sync="active"
+            md-title="您真要删除好友吗？"
+            md-content="注意，这是不可逆操作"
+            md-confirm-text="确定"
+            md-cancel-text="取消"
+            @md-confirm="deletefriend"
+          />
+            <md-button class="md-accent" style="margin:0" @click="active = true">删除好友</md-button>
+            <!-- <md-icon style="color:#ff5252">delete</md-icon> -->
+          </md-menu-item>
+        </md-menu-content>
+      </md-menu>
+      <!-- <md-button class="md-icon-button">
         <md-icon style="color:#fff">more_vert</md-icon>
-      </md-button>
-      <md-button class="md-icon-button">
+      </md-button>-->
+      <md-button class="md-icon-button" @click="deletechat">
         <md-icon style="color:#fff">clear</md-icon>
       </md-button>
     </md-toolbar>
     <md-card
-      style="margin:0;height:60vh;border-left:1px solid #e7e7e7;border-right:1px solid #e7e7e7;margin-top:-1px"
+      style="margin:0;height:50vh;border-left:1px solid #e7e7e7;border-right:1px solid #e7e7e7;margin-top:-1px"
       class="md-elevation-3"
     >
       <md-card-header>
-        <md-card-header-text>
-          <div class="md-title">Media card</div>
-          <div class="md-subhead">Normal size</div>
+        <md-card-header-text style="width:10px">
+          <!-- <div class="md-title">Media card</div> -->
+          <pre><div
+  class="md-subhead"
+  style="word-wrap:break-word;word-break:break-all;white-space: pre-line;"
+>{{ text }}</div></pre>
         </md-card-header-text>
       </md-card-header>
     </md-card>
@@ -66,19 +89,17 @@
             </md-table-row>
           </md-table>
 
-          <p>Selected:</p>
-          {{ selected }}
           <md-dialog-actions>
             <md-button class="md-accent" @click="showDialog = false">取消</md-button>
-            <md-button class="md-primary" @click="showDialog = false">分享</md-button>
+            <md-button class="md-primary" @click="shareFiles">分享</md-button>
           </md-dialog-actions>
         </md-dialog>
 
-        <md-button class="md-icon-button" @click="showDialog = true">
+        <md-button class="md-icon-button" @click="showDialog = true" style="margin-right:-10px">
           <md-icon>folder_shared</md-icon>
         </md-button>
 
-        <md-button class="md-icon-button">
+        <md-button class="md-icon-button" style="margin-right:-10px">
           <md-icon>send</md-icon>
         </md-button>
       </md-field>
@@ -99,76 +120,11 @@ export default {
     message: null,
     showDialog: false,
     selected: [],
-    files: [
-      {
-        name: "Shawna Dubbin",
-        email: "sdubbin0@geocities.com",
-        gender: "Male",
-        title: "Assistant Media Planner"
-      },
-      {
-        name: "Shawna Dubbin",
-        email: "sdubbin0@geocities.com",
-        gender: "Male",
-        title: "Assistant Media Planner"
-      },
-      {
-        name: "Shawna Dubbin",
-        email: "sdubbin0@geocities.com",
-        gender: "Male",
-        title: "Assistant Media Planner"
-      },
-      {
-        name: "Shawna Dubbin",
-        email: "sdubbin0@geocities.com",
-        gender: "Male",
-        title: "Assistant Media Planner"
-      },
-      {
-        name: "Odette Demageard",
-        email: "odemageard1@spotify.com",
-        gender: "Female",
-        title: "Account Coordinator"
-      },
-      {
-        name: "Lonnie Izkovitz",
-        email: "lizkovitz3@youtu.be",
-        gender: "Female",
-        title: "Operator"
-      },
-      {
-        name: "Thatcher Stave",
-        email: "tstave4@reference.com",
-        gender: "Male",
-        title: "Software Test Engineer III"
-      },
-      {
-        name: "Clarinda Marieton",
-        email: "cmarietonh@theatlantic.com",
-        gender: "Female",
-        title: "Paralegal"
-      },
-      {
-        name: "Clarinda Marieton",
-        email: "cmarietonh@theatlantic.com",
-        gender: "Female",
-        title: "Paralegal"
-      },
-      {
-        name: "Clarinda Marieton",
-        email: "cmarietonh@theatlantic.com",
-        gender: "Female",
-        title: "Paralegal"
-      },
-      {
-        name: "Clarinda Marieton",
-        email: "cmarietonh@theatlantic.com",
-        gender: "Female",
-        title: "Paralegal"
-      }
-    ]
+    text: "什么都没有...",
+    files: [],
+    active: false
   }),
-  props: ["nickname", "avatar"],
+  props: ["nickname", "avatar", "email"],
 
   filters: {
     calcSize: bytes => {
@@ -206,6 +162,37 @@ export default {
         }
       }
       return arr;
+    },
+    deletechat() {
+      this.$emit("deletechat", this.email);
+    },
+    deletefriend() {
+      this.axios.post("/api/relation/delete",{
+        email: this.email
+      }).then(()=>{
+        this.deletechat()
+        this.$emit("getFriends")
+      })
+    },
+    shareFiles() {
+      this.showDialog = false;
+      this.axios
+        .post("/api/share/files", {
+          identifiers: this.selected.map(item => item.identifier),
+          transferTo: this.email
+        })
+        .then(successResponse => {
+          if (this.text == "什么都没有...") {
+            this.text = "";
+          }
+          this.text +=
+            '文件"' +
+            this.selected.map(item => item.filename) +
+            '"' +
+            successResponse.data.data +
+            "\n";
+        })
+        .catch(failResponse => {});
     }
   },
   mounted: function() {

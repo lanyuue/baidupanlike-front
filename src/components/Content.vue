@@ -68,6 +68,7 @@
           @changeDownloadStatus="changeDownloadStatus"
           @start-progressbar="startProgressbar"
           @stop-progressbar="stopProgressbar"
+          :email="this.email"
         ></FileTable>
 
         <globalUploader
@@ -127,7 +128,7 @@ export default {
       isInfinity: false
     };
   },
-  props: ["nickname"],
+  props: ["nickname", "email"],
   components: {
     FileTable,
     globalUploader

@@ -92,6 +92,7 @@ export default {
     active: false,
     value: null
   }),
+  props: ["email"],
 
   filters: {
     calcSize: bytes => {
@@ -106,7 +107,9 @@ export default {
 
   methods: {
     initWebSocket: function() {
-      this.websocket = new WebSocket("ws://127.0.0.1:8090/websocket");
+      this.websocket = new WebSocket(
+        "ws://127.0.0.1:8090/websocket/" + this.email
+      );
       // 连接错误
       this.websocket.onerror = this.setErrorMessage;
       // 连接成功

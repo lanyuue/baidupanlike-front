@@ -32,6 +32,18 @@
       </md-field>
     </md-list>
 
+    <div
+      style="left:400px;top:200px;text-align:left;position:absolute"
+      v-show="!showinfo && chatusers.length<=1"
+    >
+      <span
+        class="md-display-2"
+        style="margin-bottom:20px;display:inline-block"
+      >{{ usernickname }} 你好！</span>
+      <br />
+      <span class="md-display-1" style="font-size:24px">发送文件给好友，开始共享你的云盘吧！</span>
+    </div>
+
     <md-card id="user_info" v-show="showinfo">
       <md-card-media-actions style="height:260px">
         <md-card-media>
@@ -59,7 +71,7 @@
       </md-card-header-text>
       <md-card-content>{{ description }}</md-card-content>
 
-      <md-dialog-alert :md-active.sync="add_contact" md-title="好友申请已提交！" md-content="静候TA同意吧" />
+      <md-dialog-alert :md-active.sync="add_contact" md-title="好友申请已发送！" md-content="静候TA同意吧" />
 
       <md-button
         class="md-fab md-primary"
@@ -69,13 +81,15 @@
         <md-icon>person_add</md-icon>
       </md-button>
     </md-card>
-
     <ChatWindow
       v-for="chatuser in chatusers"
       :key="chatuser.id"
       :nickname="chatuser.nickname"
+      :email="chatuser.email"
       :avatar="chatuser.avatar"
-      style="width:15vw;margin-right:40px;height:100vh;float:right;"
+      @getFriends="getFriends"
+      @deletechat="deletechat"
+      style="width:20vw;margin-right:40px;height:100vh;float:right;"
     ></ChatWindow>
     <!-- <ChatWindow style="width:18vw;margin-right:50px;height:100vh;float:right"></ChatWindow>
     <ChatWindow style="width:18vw;margin-right:50px;height:100vh;float:right"></ChatWindow>-->
@@ -98,6 +112,7 @@ export default {
     friends: [],
     chat_user: [],
     chatusers: [],
+    chatexist: [],
     showinfo: false,
     img: null,
     nickname: null,
@@ -106,6 +121,7 @@ export default {
     switcher: 1,
     add_contact: false
   }),
+  props: ["usernickname"],
   components: {
     Userlist,
     Friendlist,
@@ -145,20 +161,31 @@ export default {
         });
     },
     showChatWindow(email) {
-      this.axios
-        .post("/api/searchone", {
-          email: email
-        })
-        .then(successResponse => {
-          if (successResponse.data.code === 200) {
-            console.log(successResponse.data.data);
-            this.chat_user = successResponse.data.data;
-            this.chatusers.push(this.chat_user);
-            console.log(this.chatusers);
-            console.log(this.users);
-          } else {
-          }
-        });
+      console.log(email);
+      if (this.chatexist.indexOf(email) === -1) {
+        this.axios
+          .post("/api/searchone", {
+            email: email
+          })
+          .then(successResponse => {
+            if (successResponse.data.code === 200) {
+              console.log(successResponse.data.data);
+              this.chat_user = successResponse.data.data;
+              this.chatusers.push(this.chat_user);
+            } else {
+            }
+          });
+        this.chatexist.push(email);
+      }
+    },
+    deletechat(email) {
+      this.chatexist.splice(email, 1);
+
+      for (var i = 0; i < this.chatusers.length; i++) {
+        if (this.chatusers[i].email == email) {
+          this.chatusers.splice(i, 1);
+        }
+      }
     },
     sendNofitication() {
       this.axios.post("/api/push/send", {
@@ -169,10 +196,12 @@ export default {
     contactmode() {
       this.switcher = 1;
       this.showinfo = false;
+      console.log(this.chatexist);
     },
     searchmode() {
       this.switcher = 2;
       this.showinfo = false;
+      console.log(this.chatexist);
     },
     addContact() {
       this.sendNofitication();
