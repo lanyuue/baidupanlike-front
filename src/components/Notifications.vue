@@ -7,6 +7,7 @@
       :nickname="notification.nickname"
       :email="notification.email"
       :avatar="notification.avatar"
+      :description="notification.description"
       @getNotifications="getNotifications"
     ></Notifylists>
 

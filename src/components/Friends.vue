@@ -89,7 +89,7 @@
       :avatar="chatuser.avatar"
       @getFriends="getFriends"
       @deletechat="deletechat"
-      style="width:20vw;margin-right:40px;height:100vh;float:right;"
+      style="width:300px;margin-right:40px;margin-top:15vh;height:70vh;float:right;"
     ></ChatWindow>
     <!-- <ChatWindow style="width:18vw;margin-right:50px;height:100vh;float:right"></ChatWindow>
     <ChatWindow style="width:18vw;margin-right:50px;height:100vh;float:right"></ChatWindow>-->
@@ -188,7 +188,7 @@ export default {
       }
     },
     sendNofitication() {
-      this.axios.post("/api/push/send", {
+      this.axios.post("/api/push/sendFI", {
         userB: this.email,
         category: "friendinvite"
       });

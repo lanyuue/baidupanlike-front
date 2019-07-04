@@ -1,6 +1,6 @@
 <template>
   <div>
-    <md-toolbar style="text-align:left;background-color:#448aff;margin-top:100px" md-elevation="3">
+    <md-toolbar style="text-align:left;background-color:#448aff;" md-elevation="3">
       <md-avatar>
         <img :src="avatar" alt="People" />
       </md-avatar>
@@ -13,13 +13,13 @@
         <md-menu-content>
           <md-menu-item>
             <md-dialog-confirm
-            :md-active.sync="active"
-            md-title="您真要删除好友吗？"
-            md-content="注意，这是不可逆操作"
-            md-confirm-text="确定"
-            md-cancel-text="取消"
-            @md-confirm="deletefriend"
-          />
+              :md-active.sync="active"
+              md-title="您真要删除好友吗？"
+              md-content="注意，这是不可逆操作"
+              md-confirm-text="确定"
+              md-cancel-text="取消"
+              @md-confirm="deletefriend"
+            />
             <md-button class="md-accent" style="margin:0" @click="active = true">删除好友</md-button>
             <!-- <md-icon style="color:#ff5252">delete</md-icon> -->
           </md-menu-item>
@@ -167,12 +167,14 @@ export default {
       this.$emit("deletechat", this.email);
     },
     deletefriend() {
-      this.axios.post("/api/relation/delete",{
-        email: this.email
-      }).then(()=>{
-        this.deletechat()
-        this.$emit("getFriends")
-      })
+      this.axios
+        .post("/api/relation/delete", {
+          email: this.email
+        })
+        .then(() => {
+          this.deletechat();
+          this.$emit("getFriends");
+        });
     },
     shareFiles() {
       this.showDialog = false;
@@ -182,6 +184,7 @@ export default {
           transferTo: this.email
         })
         .then(successResponse => {
+          this.sendNofitication()
           if (this.text == "什么都没有...") {
             this.text = "";
           }
@@ -193,6 +196,15 @@ export default {
             "\n";
         })
         .catch(failResponse => {});
+    },
+    sendNofitication() {
+      this.selected.forEach(select => {
+        this.axios.post("/api/push/sendFS", {
+          userB: this.email,
+          filename: select.filename,
+          category: "fileshare"
+        });
+      });
     }
   },
   mounted: function() {
