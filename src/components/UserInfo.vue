@@ -43,8 +43,8 @@
         <div v-show="editinfo">
           <div style="width:60%;margin:-70px auto 0 auto;">
             <md-field>
-              <label>邮箱地址</label>
-              <md-input v-model="email" type="email" placeholder="请输入邮件地址"></md-input>
+              <label>邮箱地址（不可更改）</label>
+              <md-input v-model="email" type="email" disabled="true" ></md-input>
             </md-field>
 
             <md-field>

@@ -21,7 +21,7 @@
     "vee-validate": "^2.2.10",
     "vue": "^2.5.2",
     "vue-axios": "^2.1.4",
-    "vue-cropperjs": "^4.0.0",
+    "vue-cropperjs": "^4.0.1",
     "vue-material": "^1.0.0-beta-11",
     "vue-router": "^3.0.1",
     "vue-simple-uploader": "^0.7.1",

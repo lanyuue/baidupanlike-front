@@ -108,7 +108,7 @@ export default {
   methods: {
     initWebSocket: function() {
       this.websocket = new WebSocket(
-        "ws://127.0.0.1:8090/websocket/" + this.email
+        "ws://47.100.254.185:8090/websocket/" + this.email
       );
       // 连接错误
       this.websocket.onerror = this.setErrorMessage;
@@ -143,6 +143,7 @@ export default {
     closeWebSocket() {
       this.progress = 0;
       this.websocket.close();
+      this.stopProgressbar();
     },
 
     onSelect(items) {

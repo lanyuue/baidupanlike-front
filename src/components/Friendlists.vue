@@ -1,6 +1,8 @@
 <template>
   <!-- <md-list class="md-double-line"> -->
+    
   <div id="body" style="border:1px solid rgba(#000, 0.12)">
+    
     <md-list-item @click="showChatWindow">
       <md-avatar>
         <img :src="avatar" alt="People" />
@@ -28,8 +30,8 @@ export default {
   props: ["nickname", "avatar", "description", "email"],
   methods: {
     showChatWindow() {
-        // console.log(this.email);
-        this.$emit("showChatWindow", this.email);
+      // console.log(this.email);
+      this.$emit("showChatWindow", this.email);
     }
   }
 };
@@ -37,7 +39,7 @@ export default {
 
 <style scoped>
 #body {
-    border:1px solid rgba(#000, 0.12);
+  border: 1px solid rgba(#000, 0.12);
 }
 </style>
 

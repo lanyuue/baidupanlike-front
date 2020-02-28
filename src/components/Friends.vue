@@ -16,6 +16,17 @@
         :avatar="friend.avatar"
         @showChatWindow="showChatWindow"
       ></Friendlist>
+
+      <div v-if="friends.length===0">
+        <md-empty-state
+          md-icon="emoji_people"
+          md-label="好友列表为空"
+          md-description="搜索看看吧！"
+        >
+          <md-button class="md-primary md-raised" @click="searchmode">添加好友</md-button>
+        </md-empty-state>
+      </div>
+      <!-- <span  class="md-display-1" style="font-size:24px">你还没有好友哦</span> -->
     </md-list>
 
     <md-list class="md-double-line" v-show="2==switcher">
